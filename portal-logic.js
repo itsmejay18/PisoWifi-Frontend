@@ -125,9 +125,9 @@
     state.coinModalOpen = true;
     state.ratesModalOpen = false;
     state.voucherModalOpen = false;
+    resetPendingCoinState();
     prepareAudio();
     startCoinWindow();
-    simulateCoinInsert();
     render();
   }
 

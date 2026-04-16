@@ -1,4 +1,37 @@
-document.body.classList.add("portal-page");
+document.body.classList.add("portal-page", "portal-page--loading");
+
+var portalLoadingStartedAt = Date.now();
+
+function finishPortalLoading() {
+  var loader = document.getElementById("appLoader");
+
+  document.body.classList.remove("portal-page--loading");
+
+  if (!loader || loader.dataset.hidden === "true") {
+    return;
+  }
+
+  loader.dataset.hidden = "true";
+  loader.classList.add("app-loader--hidden");
+
+  window.setTimeout(function () {
+    if (loader.parentNode) {
+      loader.parentNode.removeChild(loader);
+    }
+  }, 360);
+}
+
+function schedulePortalLoadingFinish() {
+  var remainingDelay = Math.max(0, 900 - (Date.now() - portalLoadingStartedAt));
+
+  window.setTimeout(finishPortalLoading, remainingDelay);
+}
+
+if (document.readyState === "complete") {
+  schedulePortalLoadingFinish();
+} else {
+  window.addEventListener("load", schedulePortalLoadingFinish, { once: true });
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -46,10 +79,22 @@ if (!document.getElementById("coinButton")) {
         '  <circle cx="20" cy="31.3" r="2.2" fill="currentColor"/>',
         "</svg>"
       ].join("");
+  var loaderLogoMarkup = config.logoSrc
+    ? '<img class="app-loader__logo-img" src="' + escapeHtml(config.logoSrc) + '" alt="' + escapeHtml(config.logoAlt) + '">'
+    : badgeMarkup;
 
   document.body.insertAdjacentHTML(
     "beforeend",
     [
+      '<div class="app-loader" id="appLoader" aria-hidden="true">',
+      '  <div class="app-loader__inner">',
+      '    <div class="app-loader__logo">',
+      "      " + loaderLogoMarkup,
+      "    </div>",
+      '    <div class="app-loader__spinner" aria-hidden="true"></div>',
+      '    <div class="app-loader__text">Loading...</div>',
+      "  </div>",
+      "</div>",
       '<div class="portal-stage" id="portalStage">',
       '<main class="machine" aria-label="' + escapeHtml(config.machineLabel) + '">',
       '  <section class="machine__top">',
@@ -100,6 +145,7 @@ if (!document.getElementById("coinButton")) {
       '        <span class="footer__value" id="uptimeText">0h 0m 0s</span>',
       "      </div>",
       "    </div>",
+      '    <div class="machine__copyright">2026 &copy; UniFi</div>',
       "  </section>",
       "</main>",
       "</div>",

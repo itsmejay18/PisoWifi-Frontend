@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="Sample%20ui/vendosys/public/assets/images/unifi96.png">
   <title>Piso WiFi Variants</title>
   <style>
     :root {
@@ -37,6 +38,68 @@
     .wrap {
       max-width: 1520px;
       margin: 0 auto;
+    }
+
+    body.landing-loading {
+      overflow: hidden;
+    }
+
+    .landing-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.96);
+      transition: opacity 320ms ease, visibility 320ms ease;
+    }
+
+    .landing-loader--hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .landing-loader__inner {
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .landing-loader__logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #eef6ff 0%, #dbe9fb 100%);
+      box-shadow: 0 12px 28px rgba(24, 37, 56, 0.12);
+    }
+
+    .landing-loader__logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 10px;
+    }
+
+    .landing-loader__spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(47, 127, 215, 0.12);
+      border-top-color: #2f7fd7;
+      border-right-color: #5bb6ff;
+      border-radius: 50%;
+      animation: landingSpin 0.85s linear infinite;
+    }
+
+    .landing-loader__text {
+      font-size: 1rem;
+      line-height: 1.3;
+      font-weight: 800;
+      color: var(--text);
     }
 
     .grid {
@@ -123,9 +186,22 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
+
+    @keyframes landingSpin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
-<body>
+<body class="landing-loading">
+  <div class="landing-loader" id="landingLoader" aria-hidden="true">
+    <div class="landing-loader__inner">
+      <div class="landing-loader__logo">
+        <img src="Sample%20ui/vendosys/public/assets/images/unifi96.png" alt="UniFi logo">
+      </div>
+      <div class="landing-loader__spinner" aria-hidden="true"></div>
+      <div class="landing-loader__text">Loading...</div>
+    </div>
+  </div>
   <div class="wrap">
     <section class="grid">
       <article class="card">
@@ -190,5 +266,40 @@
       </article>
     </section>
   </div>
+  <script>
+    (function () {
+      var startedAt = Date.now();
+
+      function finishLandingLoading() {
+        var loader = document.getElementById("landingLoader");
+
+        document.body.classList.remove("landing-loading");
+
+        if (!loader || loader.dataset.hidden === "true") {
+          return;
+        }
+
+        loader.dataset.hidden = "true";
+        loader.classList.add("landing-loader--hidden");
+
+        window.setTimeout(function () {
+          if (loader.parentNode) {
+            loader.parentNode.removeChild(loader);
+          }
+        }, 360);
+      }
+
+      function scheduleFinish() {
+        var remainingDelay = Math.max(0, 900 - (Date.now() - startedAt));
+        window.setTimeout(finishLandingLoading, remainingDelay);
+      }
+
+      if (document.readyState === "complete") {
+        scheduleFinish();
+      } else {
+        window.addEventListener("load", scheduleFinish, { once: true });
+      }
+    }());
+  </script>
 </body>
 </html>
