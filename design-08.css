@@ -105,20 +105,6 @@ body.portal-page::before {
   pointer-events: none;
 }
 
-.modal__card::before {
-  content: "SERVICE PANEL";
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  color: rgba(156, 52, 52, 0.52);
-}
-
-.modal--voucher .modal__card::before {
-  content: "AUTHORIZATION";
-}
-
 .modal.is-open .modal__card {
   animation: stampIn 0.2s cubic-bezier(0.12, 0.84, 0.22, 1.1);
 }

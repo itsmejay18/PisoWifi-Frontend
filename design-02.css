@@ -121,20 +121,6 @@ body.portal-page::before {
   transform: translateY(-18px) scale(0.97);
 }
 
-.modal__card::before {
-  content: "SYSTEM PANEL";
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  color: rgba(36, 49, 63, 0.54);
-}
-
-.modal--voucher .modal__card::before {
-  content: "ACCESS PANEL";
-}
-
 @keyframes coinPop {
   0% { transform: translateX(0); }
   25% { transform: translateX(-4px); }

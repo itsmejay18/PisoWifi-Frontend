@@ -110,20 +110,6 @@ body.portal-page {
   pointer-events: none;
 }
 
-.modal__card::after {
-  content: "SESSION SLIP";
-  position: absolute;
-  top: 18px;
-  right: 14px;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  color: rgba(46, 41, 37, 0.48);
-}
-
-.modal--voucher .modal__card::after {
-  content: "VOUCHER SLIP";
-}
-
 .voucher-input {
   border-style: dashed;
 }

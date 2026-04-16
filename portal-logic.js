@@ -1,15 +1,21 @@
 (function () {
-  var RATES = {
-    1: 300,
-    5: 1800,
-    10: 3600
-  };
-  var VOUCHERS = {
-    WIFI5: 300,
-    WIFI30: 1800,
-    WIFI60: 3600
-  };
-  var COINS = [1, 5, 10];
+  var RATE_PLANS = [
+    { credit: 5, seconds: 3600, download: "10 MB", upload: "10 MB", voucher: "UNIFI5" },
+    { credit: 10, seconds: 7200, download: "10 MB", upload: "10 MB", voucher: "UNIFI10" },
+    { credit: 25, seconds: 18000, download: "10 MB", upload: "10 MB", voucher: "UNIFI25" },
+    { credit: 50, seconds: 36000, download: "10 MB", upload: "10 MB", voucher: "UNIFI50" },
+    { credit: 120, seconds: 86400, download: "10 MB", upload: "10 MB", voucher: "UNIFI120" },
+    { credit: 840, seconds: 604800, download: "10 MB", upload: "10 MB", voucher: "UNIFI840" }
+  ];
+  var RATES = {};
+  var VOUCHERS = {};
+  var COINS = [];
+
+  RATE_PLANS.forEach(function (plan) {
+    RATES[plan.credit] = plan.seconds;
+    VOUCHERS[plan.voucher] = plan.seconds;
+    COINS.push(plan.credit);
+  });
 
   var elements = {
     displayBox: document.getElementById("displayBox"),
@@ -19,18 +25,20 @@
     messageText: document.getElementById("messageText"),
     infoText: document.getElementById("infoText"),
     coinButton: document.getElementById("coinButton"),
+    ratesButton: document.getElementById("ratesButton"),
     voucherButton: document.getElementById("voucherButton"),
     disconnectButton: document.getElementById("disconnectButton"),
+    macText: document.getElementById("macText"),
     ipText: document.getElementById("ipText"),
-    sessionText: document.getElementById("sessionText"),
+    bandwidthText: document.getElementById("bandwidthText"),
+    uptimeText: document.getElementById("uptimeText"),
+    ratesModal: document.getElementById("ratesModal"),
+    closeRatesButton: document.getElementById("closeRatesButton"),
+    ratesTableBody: document.getElementById("ratesTableBody"),
     coinModal: document.getElementById("coinModal"),
-    simulateCoinButton: document.getElementById("simulateCoinButton"),
     continueButton: document.getElementById("continueButton"),
-    modalCoinText: document.getElementById("modalCoinText"),
-    modalCountText: document.getElementById("modalCountText"),
     modalLimitText: document.getElementById("modalLimitText"),
     modalText: document.getElementById("modalText"),
-    modalTimeText: document.getElementById("modalTimeText"),
     voucherModal: document.getElementById("voucherModal"),
     voucherInput: document.getElementById("voucherInput"),
     voucherError: document.getElementById("voucherError"),
@@ -45,10 +53,15 @@
   var state = {
     seconds: 0,
     timerId: null,
-    sessionId: createSessionId(),
+    macAddress: createMacAddress(),
+    clientIp: createClientIp(),
+    bandwidthDown: "10 MB",
+    bandwidthUp: "10 MB",
+    uptimeSeconds: 0,
     flashText: "",
     flashTimer: null,
-    modalOpen: false,
+    ratesModalOpen: false,
+    coinModalOpen: false,
     voucherModalOpen: false,
     pendingSeconds: 0,
     pendingPeso: 0,
@@ -60,13 +73,17 @@
     audioContext: null
   };
 
-  elements.ipText.textContent = "10.0.0.1";
-  elements.sessionText.textContent = state.sessionId;
+  elements.macText.textContent = state.macAddress;
+  elements.ipText.textContent = state.clientIp;
+  elements.bandwidthText.textContent = state.bandwidthDown + " \u2193 / " + state.bandwidthUp + " \u2191";
+  elements.uptimeText.textContent = formatHumanDuration(state.uptimeSeconds);
+  renderRatesTable();
 
   elements.coinButton.addEventListener("click", openCoinModal);
+  elements.ratesButton.addEventListener("click", openRatesModal);
   elements.voucherButton.addEventListener("click", openVoucherModal);
   elements.disconnectButton.addEventListener("click", disconnectSession);
-  elements.simulateCoinButton.addEventListener("click", simulateCoinInsert);
+  elements.closeRatesButton.addEventListener("click", closeRatesModal);
   elements.continueButton.addEventListener("click", continueWithTime);
   elements.useVoucherButton.addEventListener("click", applyVoucher);
   elements.closeVoucherButton.addEventListener("click", closeVoucherModal);
@@ -78,23 +95,52 @@
 
   render();
 
+  function renderRatesTable() {
+    elements.ratesTableBody.innerHTML = RATE_PLANS.map(function (plan) {
+      return [
+        "<tr>",
+        "  <td>" + formatPeso(plan.credit) + "</td>",
+        "  <td>" + escapeHtml(formatHumanDuration(plan.seconds)) + "</td>",
+        "  <td>" + escapeHtml(plan.download) + "</td>",
+        "  <td>" + escapeHtml(plan.upload) + "</td>",
+        "</tr>"
+      ].join("");
+    }).join("");
+  }
+
+  function openRatesModal() {
+    state.ratesModalOpen = true;
+    state.coinModalOpen = false;
+    state.voucherModalOpen = false;
+    stopCoinWindow();
+    render();
+  }
+
+  function closeRatesModal() {
+    state.ratesModalOpen = false;
+    render();
+  }
+
   function openCoinModal() {
-    state.modalOpen = true;
+    state.coinModalOpen = true;
+    state.ratesModalOpen = false;
     state.voucherModalOpen = false;
     prepareAudio();
     startCoinWindow();
+    simulateCoinInsert();
     render();
   }
 
   function closeCoinModal() {
-    state.modalOpen = false;
+    state.coinModalOpen = false;
     stopCoinWindow();
     render();
   }
 
   function openVoucherModal() {
     state.voucherModalOpen = true;
-    state.modalOpen = false;
+    state.coinModalOpen = false;
+    state.ratesModalOpen = false;
     stopCoinWindow();
     state.voucherError = "";
     elements.voucherInput.value = "";
@@ -126,8 +172,8 @@
   function continueWithTime() {
     if (state.pendingSeconds > 0) {
       state.seconds += state.pendingSeconds;
-      showFlashMessage("Time loaded: " + formatMinutes(state.pendingSeconds));
-      elements.infoText.textContent = "Coins inserted: " + "\u20B1" + state.pendingPeso + " - Added " + formatMinutes(state.pendingSeconds);
+      showFlashMessage("Credit loaded: " + formatPeso(state.pendingPeso));
+      elements.infoText.textContent = "Credit loaded: " + formatPeso(state.pendingPeso) + " - " + formatHumanDuration(state.pendingSeconds);
       pulseDisplay();
       startTimer();
     }
@@ -147,7 +193,7 @@
     stopCoinWindow();
     state.coinWindowSeconds = 30;
     state.coinWindowId = window.setInterval(function () {
-      if (!state.modalOpen) {
+      if (!state.coinModalOpen) {
         stopCoinWindow();
         return;
       }
@@ -194,8 +240,8 @@
 
     state.seconds += voucherSeconds;
     state.voucherError = "";
-    elements.infoText.textContent = "Voucher loaded: " + code + " - Added " + formatMinutes(voucherSeconds);
-    showFlashMessage("Voucher accepted: " + formatMinutes(voucherSeconds));
+    elements.infoText.textContent = "Voucher loaded: " + code + " - " + formatHumanDuration(voucherSeconds);
+    showFlashMessage("Voucher accepted: " + code);
     pulseDisplay();
     startTimer();
     closeVoucherModal();
@@ -203,19 +249,23 @@
 
   function disconnectSession() {
     state.seconds = 0;
+    state.uptimeSeconds = 0;
     stopTimer();
 
     if (state.flashTimer !== null) {
       window.clearTimeout(state.flashTimer);
     }
 
-    state.sessionId = createSessionId();
-    elements.sessionText.textContent = state.sessionId;
+    state.macAddress = createMacAddress();
+    state.clientIp = createClientIp();
+    elements.macText.textContent = state.macAddress;
+    elements.ipText.textContent = state.clientIp;
     elements.infoText.textContent = defaultRatesText();
     state.flashText = "";
     state.voucherError = "";
     elements.voucherInput.value = "";
     resetPendingCoinState();
+    closeRatesModal();
     closeCoinModal();
     closeVoucherModal();
     render();
@@ -229,6 +279,7 @@
     state.timerId = window.setInterval(function () {
       if (state.seconds > 0) {
         state.seconds -= 1;
+        state.uptimeSeconds += 1;
       }
 
       if (state.seconds <= 0) {
@@ -236,6 +287,7 @@
         stopTimer();
         elements.infoText.textContent = defaultRatesText();
         state.flashText = "";
+        closeRatesModal();
         closeCoinModal();
         closeVoucherModal();
       }
@@ -253,28 +305,28 @@
 
   function render() {
     var connected = state.seconds > 0;
-    var message = state.flashText || (connected ? "Internet access is active" : "Tap Insert Coin to add time");
+    var message = state.flashText || (connected ? "Internet access is active" : "Tap Insert Coin or use Voucher");
 
     elements.statusText.textContent = connected ? "CONNECTED" : "WAITING";
     elements.timerText.textContent = formatTime(state.seconds);
     elements.messageText.textContent = message;
+    elements.macText.textContent = state.macAddress;
+    elements.ipText.textContent = state.clientIp;
+    elements.bandwidthText.textContent = state.bandwidthDown + " \u2193 / " + state.bandwidthUp + " \u2191";
+    elements.uptimeText.textContent = formatHumanDuration(state.uptimeSeconds);
     elements.statusBox.classList.toggle("is-connected", connected);
     elements.disconnectButton.disabled = !connected;
-    elements.coinModal.classList.toggle("is-open", state.modalOpen);
-    elements.coinModal.setAttribute("aria-hidden", state.modalOpen ? "false" : "true");
+    elements.ratesModal.classList.toggle("is-open", state.ratesModalOpen);
+    elements.ratesModal.setAttribute("aria-hidden", state.ratesModalOpen ? "false" : "true");
+    elements.coinModal.classList.toggle("is-open", state.coinModalOpen);
+    elements.coinModal.setAttribute("aria-hidden", state.coinModalOpen ? "false" : "true");
     elements.voucherModal.classList.toggle("is-open", state.voucherModalOpen);
     elements.voucherModal.setAttribute("aria-hidden", state.voucherModalOpen ? "false" : "true");
-    elements.modalTimeText.textContent = formatTime(state.pendingSeconds);
     elements.modalLimitText.textContent = "Insert time left: " + pad(Math.floor(state.coinWindowSeconds / 60)) + ":" + pad(state.coinWindowSeconds % 60);
     elements.modalText.textContent = state.pendingSeconds > 0
-      ? "You can insert more coins or continue with the loaded time."
-      : "Press Insert Coin to simulate a coin insertion event.";
-    elements.modalCoinText.textContent = state.pendingSeconds > 0
-      ? "Pending credit: " + "\u20B1" + state.pendingPeso + (state.lastCoin ? " - Last coin: " + "\u20B1" + state.lastCoin : "")
-      : "No coin detected yet.";
-    elements.modalCountText.textContent = "Coins inserted: " + state.pendingCoinCount;
+      ? "Detected inserted credit. Press Done to continue."
+      : "Waiting for inserted credit...";
     elements.voucherError.textContent = state.voucherError;
-    elements.simulateCoinButton.disabled = state.coinWindowSeconds <= 0;
   }
 
   function showFlashMessage(text) {
@@ -346,7 +398,9 @@
   }
 
   function defaultRatesText() {
-    return "WiFi Rates: " + "\u20B1" + "1 = 5 mins, " + "\u20B1" + "5 = 30 mins, " + "\u20B1" + "10 = 60 mins";
+    return "WiFi Rates: " + RATE_PLANS.map(function (plan) {
+      return formatPeso(plan.credit) + " = " + formatShortDuration(plan.seconds);
+    }).join(", ");
   }
 
   function formatTime(totalSeconds) {
@@ -356,16 +410,47 @@
     return pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
   }
 
-  function formatMinutes(totalSeconds) {
-    var minutes = Math.floor(totalSeconds / 60);
-    return minutes + (minutes === 1 ? " minute" : " minutes");
+  function formatHumanDuration(totalSeconds) {
+    var hours = Math.floor(totalSeconds / 3600);
+    var minutes = Math.floor((totalSeconds % 3600) / 60);
+    var seconds = totalSeconds % 60;
+    return hours + "h " + minutes + "m " + seconds + "s";
+  }
+
+  function formatShortDuration(totalSeconds) {
+    var hours = Math.floor(totalSeconds / 3600);
+    return hours + "h";
+  }
+
+  function formatPeso(value) {
+    return "\u20B1" + value;
   }
 
   function pad(value) {
     return value < 10 ? "0" + value : String(value);
   }
 
-  function createSessionId() {
-    return "PWF-" + Math.floor(Math.random() * 900000 + 100000);
+  function createMacAddress() {
+    var parts = [];
+    var index;
+
+    for (index = 0; index < 6; index += 1) {
+      parts.push(Math.floor(Math.random() * 256).toString(16).padStart(2, "0"));
+    }
+
+    return parts.join(":");
+  }
+
+  function createClientIp() {
+    return "10.0.0." + Math.floor(Math.random() * 200 + 20);
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 }());
