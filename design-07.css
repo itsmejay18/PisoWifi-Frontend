@@ -1,0 +1,155 @@
+:root {
+  --body-bg: linear-gradient(180deg, #e8fff2 0%, #cdf4dd 100%);
+  --body-accent: rgba(255, 255, 255, 0.7);
+  --machine-width: 432px;
+  --machine-radius: 42px;
+  --machine-bg: linear-gradient(180deg, #fafffc 0%, #e3f7eb 100%);
+  --machine-border: rgba(53, 143, 90, 0.12);
+  --machine-shadow: 0 24px 52px rgba(48, 121, 81, 0.16);
+  --panel-radius: 28px;
+  --panel-bg: rgba(255, 255, 255, 0.94);
+  --panel-border: #b8deca;
+  --text: #18352a;
+  --muted: #557867;
+  --badge-bg: linear-gradient(180deg, #59d48e 0%, #2f965d 100%);
+  --slot-bg: linear-gradient(180deg, #163323 0%, #335a45 100%);
+  --display-radius: 30px;
+  --display-bg: linear-gradient(180deg, #0f2219 0%, #17372a 100%);
+  --display-border: #2f624a;
+  --display-text: #9dffd1;
+  --waiting: #7ea08f;
+  --connected: #65ff98;
+  --primary-bg: linear-gradient(180deg, #47d58c 0%, #239356 100%);
+  --primary-shadow: 0 14px 26px rgba(70, 213, 138, 0.22);
+  --danger-bg: linear-gradient(180deg, #e27e77 0%, #bf4c47 100%);
+  --secondary-bg: #eef8f1;
+  --secondary-border: #bfe0ca;
+  --info-bg: #f3fbf6;
+  --info-border: #bfe0ca;
+  --footer-bg: #eef8f1;
+  --footer-border: #bfe0ca;
+  --modal-overlay: rgba(166, 222, 190, 0.46);
+  --modal-card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(238, 250, 243, 0.94) 100%);
+  --modal-card-border: rgba(136, 195, 160, 0.4);
+  --modal-card-shadow: 0 24px 50px rgba(57, 121, 81, 0.16);
+  --voucher-input-bg: rgba(245, 252, 247, 0.96);
+  --voucher-input-border: rgba(148, 198, 170, 0.4);
+  --accent-text: #238956;
+}
+
+body.portal-page {
+  font-family: Verdana, "Trebuchet MS", sans-serif;
+}
+
+body.portal-page::before,
+body.portal-page::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+body.portal-page::before {
+  width: 240px;
+  height: 240px;
+  top: 22px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.44);
+  filter: blur(30px);
+}
+
+body.portal-page::after {
+  width: 280px;
+  height: 280px;
+  right: -50px;
+  bottom: -60px;
+  background: rgba(125, 215, 166, 0.22);
+  filter: blur(40px);
+}
+
+.machine::before {
+  content: "";
+  position: absolute;
+  inset: 14px auto auto 14px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.brand {
+  gap: 14px;
+}
+
+.brand__badge {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.38), 0 14px 26px rgba(47, 150, 93, 0.18);
+}
+
+.display::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 40%);
+  pointer-events: none;
+}
+
+.button {
+  border-radius: 999px;
+}
+
+.button--primary::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), transparent 42%);
+  pointer-events: none;
+}
+
+.modal--coin {
+  background: rgba(164, 224, 190, 0.44);
+}
+
+.modal--voucher {
+  background: rgba(192, 237, 212, 0.46);
+}
+
+.modal__card {
+  border-radius: 32px;
+  backdrop-filter: blur(18px);
+}
+
+.modal__card::before {
+  content: "";
+  position: absolute;
+  inset: -30px auto auto -20px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.34);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.modal.is-open .modal__card {
+  animation: mintFloat 0.36s ease;
+}
+
+@keyframes mintFloat {
+  0% { opacity: 0; transform: translateY(28px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes coinPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.025) translateY(-4px); }
+  100% { transform: scale(1); }
+}
+
+@keyframes blink {
+  0% { opacity: 0.82; }
+  50% { opacity: 1; }
+  100% { opacity: 1; }
+}

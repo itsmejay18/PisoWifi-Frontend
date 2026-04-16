@@ -1,0 +1,143 @@
+:root {
+  --body-bg: linear-gradient(180deg, #fff1f1 0%, #ffd7d7 100%);
+  --body-accent: rgba(255, 255, 255, 0.66);
+  --machine-radius: 18px;
+  --machine-bg: linear-gradient(180deg, #fff9f9 0%, #ffe6e6 100%);
+  --machine-border: rgba(157, 42, 42, 0.16);
+  --machine-shadow: 0 22px 46px rgba(128, 22, 22, 0.18);
+  --panel-radius: 18px;
+  --panel-bg: #fffefe;
+  --panel-border: #efc2c2;
+  --text: #3c1515;
+  --muted: #8d5555;
+  --badge-bg: linear-gradient(180deg, #ff6d6d 0%, #c72f2f 100%);
+  --slot-bg: linear-gradient(180deg, #240c0c 0%, #6e2626 100%);
+  --display-bg: linear-gradient(180deg, #1c0e11 0%, #2a1519 100%);
+  --display-border: #6f2b31;
+  --display-text: #ffb3b3;
+  --waiting: #b78b8b;
+  --connected: #ff7676;
+  --primary-bg: linear-gradient(180deg, #ff6161 0%, #d52c2c 100%);
+  --primary-shadow: 0 14px 28px rgba(213, 44, 44, 0.22);
+  --danger-bg: linear-gradient(180deg, #5f2121 0%, #381212 100%);
+  --danger-shadow: 0 12px 24px rgba(56, 18, 18, 0.22);
+  --secondary-bg: #fff2f2;
+  --secondary-border: #e7c0c0;
+  --info-bg: #fff4f4;
+  --info-border: #efc2c2;
+  --footer-bg: #fff2f2;
+  --footer-border: #edc1c1;
+  --modal-overlay: rgba(63, 10, 10, 0.7);
+  --modal-card-bg: linear-gradient(180deg, #fff9f9 0%, #ffeaea 100%);
+  --modal-card-border: rgba(196, 81, 81, 0.3);
+  --modal-card-shadow: 0 24px 48px rgba(80, 12, 12, 0.24);
+  --voucher-input-bg: #fff6f6;
+  --voucher-input-border: rgba(200, 92, 92, 0.32);
+  --accent-text: #d52c2c;
+}
+
+body.portal-page {
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body.portal-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 91, 91, 0.08), transparent 30%);
+  pointer-events: none;
+}
+
+.machine::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 10px;
+  background: repeating-linear-gradient(135deg, #d52c2c 0 10px, #fff3f3 10px 20px);
+  pointer-events: none;
+}
+
+.machine__top {
+  justify-items: stretch;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(183, 77, 77, 0.16);
+}
+
+.brand {
+  grid-template-columns: 78px 1fr;
+  align-items: center;
+  justify-items: start;
+  text-align: left;
+}
+
+.brand__badge {
+  border: 2px solid rgba(255, 255, 255, 0.45);
+}
+
+.display {
+  border-width: 2px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 14px 26px rgba(102, 20, 20, 0.12);
+}
+
+.status {
+  border: 1px solid rgba(255, 180, 180, 0.12);
+}
+
+.button {
+  border-radius: 14px;
+}
+
+.button--primary,
+.button--danger {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), var(--primary-shadow);
+}
+
+.button--danger {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), var(--danger-shadow);
+}
+
+.modal--coin::before,
+.modal--voucher::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0 16px, transparent 16px 32px);
+  pointer-events: none;
+}
+
+.modal__card::before {
+  content: "SERVICE PANEL";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: rgba(156, 52, 52, 0.52);
+}
+
+.modal--voucher .modal__card::before {
+  content: "AUTHORIZATION";
+}
+
+.modal.is-open .modal__card {
+  animation: stampIn 0.2s cubic-bezier(0.12, 0.84, 0.22, 1.1);
+}
+
+@keyframes stampIn {
+  0% { opacity: 0; transform: translateY(18px) scale(0.92); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes coinPop {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.02); }
+  40% { transform: scale(0.99); }
+  60% { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+@keyframes blink {
+  0% { opacity: 0.84; }
+  45% { opacity: 1; }
+  100% { opacity: 1; }
+}

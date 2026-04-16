@@ -1,0 +1,168 @@
+:root {
+  --body-bg:
+    linear-gradient(180deg, rgba(18, 20, 34, 0.98) 0%, rgba(12, 15, 28, 0.98) 100%),
+    linear-gradient(90deg, rgba(82, 90, 148, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(82, 90, 148, 0.08) 1px, transparent 1px);
+  --body-accent: transparent;
+  --body-text: #eef1ff;
+  --machine-width: 448px;
+  --machine-radius: 14px;
+  --machine-bg: linear-gradient(180deg, rgba(18, 21, 37, 0.96) 0%, rgba(10, 12, 24, 0.98) 100%);
+  --machine-border: rgba(141, 162, 255, 0.2);
+  --machine-shadow: 0 30px 64px rgba(0, 0, 0, 0.5);
+  --panel-radius: 0;
+  --panel-bg: rgba(10, 14, 28, 0.9);
+  --panel-border: rgba(131, 151, 255, 0.16);
+  --text: #eef1ff;
+  --muted: #9ea8d7;
+  --badge-radius: 12px;
+  --badge-bg: linear-gradient(180deg, #7a86ff 0%, #3945d6 100%);
+  --slot-width: 190px;
+  --slot-radius: 2px;
+  --slot-bg: linear-gradient(180deg, #05060d 0%, #374196 100%);
+  --display-radius: 0;
+  --display-bg: linear-gradient(180deg, #070911 0%, #0c1122 100%);
+  --display-border: rgba(133, 163, 255, 0.18);
+  --display-text: #9efff1;
+  --waiting: #838dbd;
+  --connected: #84ffe0;
+  --primary-bg: linear-gradient(180deg, #7482ff 0%, #3342dc 100%);
+  --primary-shadow: none;
+  --danger-bg: linear-gradient(180deg, #ff6b93 0%, #c93f66 100%);
+  --danger-shadow: none;
+  --secondary-bg: rgba(20, 24, 43, 0.95);
+  --secondary-text: #eef1ff;
+  --secondary-border: rgba(133, 163, 255, 0.16);
+  --secondary-shadow: none;
+  --info-bg: rgba(14, 18, 35, 0.96);
+  --info-border: rgba(133, 163, 255, 0.18);
+  --footer-bg: rgba(15, 19, 37, 0.98);
+  --footer-border: rgba(133, 163, 255, 0.16);
+  --modal-overlay: rgba(6, 8, 18, 0.88);
+  --modal-card-bg: linear-gradient(180deg, rgba(14, 17, 34, 0.98) 0%, rgba(9, 11, 22, 0.98) 100%);
+  --modal-card-border: rgba(133, 163, 255, 0.18);
+  --modal-card-shadow: none;
+  --voucher-input-bg: rgba(18, 21, 40, 0.98);
+  --voucher-input-border: rgba(133, 163, 255, 0.16);
+  --accent-text: #8ea0ff;
+  --danger-accent: #ff8db1;
+}
+
+body.portal-page {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background-size: auto, 32px 32px, 32px 32px;
+}
+
+body.portal-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0, rgba(122, 134, 255, 0.04) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.machine::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(131, 151, 255, 0.16);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  pointer-events: none;
+}
+
+.brand {
+  grid-template-columns: 76px 1fr;
+  align-items: center;
+  justify-items: start;
+  text-align: left;
+}
+
+.brand__title,
+.footer__label,
+.button,
+.modal__title {
+  letter-spacing: 0.12em;
+}
+
+.display,
+.info-box,
+.footer__item,
+.modal__card,
+.button {
+  box-shadow: none;
+}
+
+.machine__panel,
+.display,
+.info-box,
+.footer__item,
+.modal__card {
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+
+.display::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 5px);
+  pointer-events: none;
+}
+
+.display::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 72px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(158, 255, 241, 0.8) 100%);
+  pointer-events: none;
+}
+
+.button {
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
+.modal--coin::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(122, 134, 255, 0.12) 50%, transparent 100%);
+  animation: scanSweep 2.2s linear infinite;
+  pointer-events: none;
+}
+
+.modal__card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border: 1px solid rgba(131, 163, 255, 0.14);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  pointer-events: none;
+}
+
+.modal.is-open .modal__card {
+  animation: gridOpen 0.24s ease;
+}
+
+@keyframes scanSweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes gridOpen {
+  0% { opacity: 0; transform: scale(0.96); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes coinPop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.02) skewX(-1deg); }
+  100% { transform: scale(1); }
+}
+
+@keyframes blink {
+  0% { opacity: 0.84; }
+  46% { opacity: 1; }
+  100% { opacity: 1; }
+}

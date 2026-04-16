@@ -1,0 +1,129 @@
+:root {
+  --body-bg:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.4), transparent 34%),
+    linear-gradient(180deg, #fff1df 0%, #ffd8b1 100%);
+  --body-accent: rgba(255, 255, 255, 0.55);
+  --machine-radius: 36px;
+  --machine-bg: linear-gradient(180deg, #fff7ee 0%, #ffe3c0 100%);
+  --machine-border: rgba(162, 92, 26, 0.16);
+  --machine-shadow: 0 24px 48px rgba(156, 98, 47, 0.18);
+  --panel-bg: #fffaf2;
+  --panel-border: #ebb980;
+  --text: #492b16;
+  --muted: #8e6039;
+  --badge-bg: linear-gradient(180deg, #ffb14f 0%, #e4691f 100%);
+  --slot-bg: linear-gradient(180deg, #552f10 0%, #965521 100%);
+  --display-bg: linear-gradient(180deg, #422816 0%, #1f140d 100%);
+  --display-border: #85522a;
+  --display-text: #ffd28a;
+  --waiting: #d69a51;
+  --connected: #7ae48f;
+  --primary-bg: linear-gradient(180deg, #ffa436 0%, #e26117 100%);
+  --primary-shadow: 0 12px 24px rgba(226, 97, 23, 0.24);
+  --danger-bg: linear-gradient(180deg, #f17b56 0%, #cf4938 100%);
+  --secondary-bg: #fff0dd;
+  --secondary-border: #e8be89;
+  --info-bg: #fff3e2;
+  --info-border: #e8be89;
+  --footer-bg: #fff0dd;
+  --footer-border: #eabd87;
+  --modal-overlay: rgba(85, 49, 21, 0.58);
+  --modal-card-bg: linear-gradient(180deg, #fff8ef 0%, #ffe8cf 100%);
+  --modal-card-border: #e6b782;
+  --modal-card-shadow: 0 24px 50px rgba(102, 56, 18, 0.22);
+  --voucher-input-bg: #fff4e4;
+  --voucher-input-border: #e7bb87;
+  --accent-text: #d9631a;
+}
+
+body.portal-page {
+  font-family: Verdana, "Trebuchet MS", sans-serif;
+}
+
+body.portal-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 191, 118, 0.18), transparent 48%);
+  pointer-events: none;
+}
+
+.machine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.4) 0%, transparent 34%);
+  pointer-events: none;
+}
+
+.brand__badge {
+  border: 4px solid rgba(255, 220, 176, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 12px 22px rgba(226, 97, 23, 0.18);
+}
+
+.machine__slot {
+  width: 150px;
+}
+
+.display {
+  border-width: 2px;
+}
+
+.display::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 30%;
+  background: linear-gradient(180deg, rgba(255, 212, 138, 0.08), transparent);
+  pointer-events: none;
+}
+
+.button {
+  border: 1px solid rgba(164, 93, 24, 0.18);
+}
+
+.info-box {
+  background-image: repeating-linear-gradient(180deg, rgba(226, 97, 23, 0.03) 0 10px, transparent 10px 20px);
+}
+
+.modal--coin {
+  background: linear-gradient(180deg, rgba(92, 55, 25, 0.62) 0%, rgba(71, 43, 18, 0.62) 100%);
+}
+
+.modal--voucher {
+  background: linear-gradient(180deg, rgba(135, 76, 24, 0.52) 0%, rgba(87, 50, 19, 0.62) 100%);
+}
+
+.modal__card::before {
+  content: "";
+  position: absolute;
+  inset: -20% auto auto -10%;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255, 207, 150, 0.28);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+.modal.is-open .modal__card {
+  animation: retroSwing 0.36s ease;
+}
+
+@keyframes retroSwing {
+  0% { opacity: 0; transform: translateY(20px) scale(0.94) rotate(-2deg); }
+  100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+}
+
+@keyframes coinPop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.02) rotate(-0.6deg); }
+  70% { transform: scale(1.01) rotate(0.6deg); }
+  100% { transform: scale(1); }
+}
+
+@keyframes blink {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 1; }
+}

@@ -1,0 +1,169 @@
+:root {
+  --body-bg: linear-gradient(180deg, #d8e1ec 0%, #eef3f9 100%);
+  --body-accent: rgba(255, 255, 255, 0.76);
+  --machine-width: 430px;
+  --machine-radius: 34px;
+  --machine-bg: linear-gradient(180deg, #fefefe 0%, #ecf1f7 62%, #dce5ef 100%);
+  --machine-border: rgba(64, 82, 103, 0.16);
+  --machine-shadow: 0 28px 55px rgba(35, 48, 66, 0.18);
+  --panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(243, 248, 255, 0.92) 100%);
+  --panel-border: rgba(133, 151, 173, 0.42);
+  --text: #1c2b3e;
+  --muted: #5f7388;
+  --badge-bg: linear-gradient(180deg, #84bbff 0%, #2f78d3 100%);
+  --display-bg: linear-gradient(180deg, #152330 0%, #0c1520 100%);
+  --display-border: #31495f;
+  --display-text: #95ffd1;
+  --primary-bg: linear-gradient(180deg, #6ec0ff 0%, #2d7cd6 100%);
+  --primary-shadow: 0 14px 28px rgba(45, 124, 214, 0.26);
+  --danger-bg: linear-gradient(180deg, #ff988f 0%, #dc645d 100%);
+  --secondary-bg: rgba(244, 248, 253, 0.95);
+  --secondary-border: rgba(146, 162, 181, 0.38);
+  --info-bg: rgba(248, 251, 255, 0.92);
+  --info-border: rgba(166, 180, 197, 0.52);
+  --footer-bg: rgba(242, 247, 252, 0.94);
+  --footer-border: rgba(161, 176, 194, 0.48);
+  --modal-overlay: rgba(198, 213, 232, 0.62);
+  --modal-card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.97) 0%, rgba(238, 245, 252, 0.95) 100%);
+  --modal-card-border: rgba(153, 170, 191, 0.42);
+  --modal-card-shadow: 0 26px 56px rgba(31, 48, 68, 0.18);
+  --voucher-input-bg: rgba(248, 251, 255, 0.96);
+  --voucher-input-border: rgba(161, 177, 196, 0.5);
+  --accent-text: #256dc4;
+}
+
+body.portal-page {
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body.portal-page::before,
+body.portal-page::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(120px);
+}
+
+body.portal-page::before {
+  width: 340px;
+  height: 340px;
+  top: -90px;
+  left: -80px;
+  background: rgba(92, 170, 255, 0.2);
+}
+
+body.portal-page::after {
+  width: 300px;
+  height: 300px;
+  right: -60px;
+  bottom: -70px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.machine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.62) 0%, transparent 36%);
+  pointer-events: none;
+}
+
+.machine__top {
+  justify-items: stretch;
+}
+
+.brand {
+  grid-template-columns: 88px 1fr;
+  align-items: center;
+  justify-items: start;
+  text-align: left;
+}
+
+.brand__badge {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 14px 28px rgba(47, 120, 211, 0.2);
+}
+
+.brand__badge::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.38) 0%, transparent 40%);
+}
+
+.machine__slot {
+  justify-self: end;
+  width: 152px;
+}
+
+.display::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 38%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent);
+  pointer-events: none;
+}
+
+.display::after {
+  content: "";
+  position: absolute;
+  inset: auto 10% 12px 10%;
+  height: 1px;
+  background: rgba(149, 255, 209, 0.18);
+  pointer-events: none;
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.34) 48%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 240ms ease;
+  pointer-events: none;
+}
+
+.button:hover::before {
+  transform: translateX(120%);
+}
+
+.modal--coin {
+  background: linear-gradient(180deg, rgba(208, 221, 238, 0.72) 0%, rgba(191, 206, 225, 0.56) 100%);
+}
+
+.modal--voucher {
+  background: linear-gradient(180deg, rgba(225, 234, 246, 0.76) 0%, rgba(206, 218, 235, 0.62) 100%);
+}
+
+.modal__card {
+  backdrop-filter: blur(16px);
+}
+
+.modal__card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.5) 0%, transparent 46%);
+  pointer-events: none;
+}
+
+.modal--voucher .modal__card {
+  border-radius: 30px;
+}
+
+@keyframes coinPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.025); }
+  70% { transform: scale(1.01) rotate(-0.4deg); }
+  100% { transform: scale(1); }
+}
+
+@keyframes blink {
+  0% { opacity: 0.76; }
+  45% { opacity: 1; }
+  100% { opacity: 1; }
+}

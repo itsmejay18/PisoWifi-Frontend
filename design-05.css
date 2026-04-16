@@ -1,0 +1,142 @@
+:root {
+  --body-bg: linear-gradient(180deg, #ece8df 0%, #ddd6cb 100%);
+  --body-accent: rgba(255, 255, 255, 0.28);
+  --machine-width: 398px;
+  --machine-radius: 8px;
+  --machine-bg: linear-gradient(180deg, #fffefb 0%, #f0ebe3 100%);
+  --machine-border: rgba(84, 74, 62, 0.18);
+  --machine-shadow: 0 18px 32px rgba(66, 58, 50, 0.12);
+  --panel-radius: 8px;
+  --panel-bg: #fffdf8;
+  --panel-border: #c8beb1;
+  --text: #2e2925;
+  --muted: #746b60;
+  --badge-size: 82px;
+  --badge-radius: 6px;
+  --badge-bg: linear-gradient(180deg, #353535 0%, #5c5c5c 100%);
+  --slot-width: 186px;
+  --slot-radius: 2px;
+  --slot-bg: linear-gradient(180deg, #141414 0%, #515151 100%);
+  --display-radius: 6px;
+  --display-bg: linear-gradient(180deg, #131313 0%, #1f1f1f 100%);
+  --display-border: #454545;
+  --display-text: #ddf8bb;
+  --waiting: #8a8a8a;
+  --connected: #72db5f;
+  --primary-bg: linear-gradient(180deg, #2f2f2f 0%, #111111 100%);
+  --primary-shadow: none;
+  --danger-bg: linear-gradient(180deg, #7c3935 0%, #4b201d 100%);
+  --danger-shadow: none;
+  --secondary-bg: #f6f1e9;
+  --secondary-border: #c4b8a8;
+  --secondary-shadow: none;
+  --info-bg: #faf5ed;
+  --info-border: #bbb0a3;
+  --footer-bg: #f7f1e8;
+  --footer-border: #c3b7aa;
+  --modal-overlay: rgba(82, 74, 63, 0.46);
+  --modal-card-bg: #fffef9;
+  --modal-card-border: #c8beb1;
+  --modal-card-shadow: 0 18px 26px rgba(61, 56, 50, 0.1);
+  --voucher-input-bg: #fbf6ee;
+  --voucher-input-border: #c8bdae;
+  --accent-text: #202020;
+  --danger-accent: #7b3834;
+}
+
+body.portal-page {
+  font-family: "Courier New", Courier, monospace;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.25), transparent 30%),
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0 2px, transparent 2px 22px),
+    linear-gradient(180deg, #ece8df 0%, #ddd6cb 100%);
+}
+
+.machine__panel,
+.info-box,
+.footer__item {
+  border-style: dashed;
+}
+
+.brand__title,
+.timer,
+.modal__time,
+.button,
+.footer__label {
+  letter-spacing: 0.08em;
+}
+
+.brand__badge {
+  width: 84px;
+  height: 64px;
+}
+
+.brand__mark-text {
+  font-size: 0.9rem;
+}
+
+.display::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 4px);
+  pointer-events: none;
+}
+
+.button {
+  border-radius: 6px;
+  border: 1px dashed rgba(56, 49, 43, 0.32);
+}
+
+.button--primary,
+.button--danger {
+  color: #fffef9;
+}
+
+.modal__card {
+  border-radius: 0 0 14px 14px;
+  transform: translateY(-20px) scale(0.98);
+}
+
+.modal__card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 14px;
+  background: radial-gradient(circle, transparent 5px, #fffef9 6px);
+  background-size: 20px 14px;
+  background-position: center top;
+  pointer-events: none;
+}
+
+.modal__card::after {
+  content: "SESSION SLIP";
+  position: absolute;
+  top: 18px;
+  right: 14px;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: rgba(46, 41, 37, 0.48);
+}
+
+.modal--voucher .modal__card::after {
+  content: "VOUCHER SLIP";
+}
+
+.voucher-input {
+  border-style: dashed;
+}
+
+@keyframes coinPop {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes blink {
+  0% { opacity: 0.82; }
+  35% { opacity: 1; }
+  65% { opacity: 0.88; }
+  100% { opacity: 1; }
+}

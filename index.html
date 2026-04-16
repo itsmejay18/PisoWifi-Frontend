@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piso WiFi Variants</title>
+  <style>
+    :root {
+      --bg: #0f1724;
+      --panel: #151f2f;
+      --panel-soft: #1d2a3d;
+      --line: rgba(255, 255, 255, 0.1);
+      --text: #eef4ff;
+      --muted: #a6b5cc;
+      --accent: #5bb6ff;
+      --accent-2: #79e2c3;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(91, 182, 255, 0.14), transparent 30%),
+        linear-gradient(180deg, #0f1724 0%, #111b2a 100%);
+      color: var(--text);
+    }
+
+    body {
+      padding: 28px 18px 40px;
+    }
+
+    .wrap {
+      max-width: 1520px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 960px) {
+      .grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1180px) {
+      .grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1440px) {
+      .grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+
+    .card {
+      display: grid;
+      gap: 16px;
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent), var(--panel-soft);
+      box-shadow: var(--shadow);
+    }
+
+    .swatch {
+      height: 110px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .swatch--01 { background: linear-gradient(180deg, #fdfefe 0%, #0d1720 100%); }
+    .swatch--02 { background: linear-gradient(135deg, #eef3f7 0%, #35414d 100%); }
+    .swatch--03 { background: linear-gradient(135deg, #08111d 0%, #18dfe8 100%); }
+    .swatch--04 { background: linear-gradient(135deg, #fff6eb 0%, #ea6a1f 100%); }
+    .swatch--05 { background: linear-gradient(135deg, #fffefb 0%, #232323 100%); }
+    .swatch--06 { background: linear-gradient(135deg, #17130f 0%, #e1bb5f 100%); }
+    .swatch--07 { background: linear-gradient(135deg, #f9fffb 0%, #2f965d 100%); }
+    .swatch--08 { background: linear-gradient(135deg, #fff7f7 0%, #d52c2c 100%); }
+    .swatch--09 { background: linear-gradient(135deg, #ffffff 0%, #2b7ed5 100%); }
+    .swatch--10 { background: linear-gradient(135deg, #0c1122 0%, #7a86ff 100%); }
+
+    .card h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.2;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.92rem;
+    }
+
+    .card a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 16px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #5bb6ff 0%, #2f7fd7 100%);
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="grid">
+      <article class="card">
+        <div class="swatch swatch--01"></div>
+        <h2>01 Classic Gloss</h2>
+        <p>Clean bright machine with the original polished kiosk look.</p>
+        <a href="design-01.html">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--02"></div>
+        <h2>02 Steel Cabinet</h2>
+        <p>Industrial gray box styling with sharper edges and operator-panel feel.</p>
+        <a href="design-02.html">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--03"></div>
+        <h2>03 Neon Arcade</h2>
+        <p>Dark glowing cabinet with futuristic cyan and electric-blue accents.</p>
+        <a href="design-03.html">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--04"></div>
+        <h2>04 Retro Orange</h2>
+        <p>Warm orange machine inspired by older vendo-style hardware.</p>
+        <a href="design-04.html">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--05"></div>
+        <h2>05 Receipt Terminal</h2>
+        <p>Monospace ticket-like design with paper terminal aesthetics.</p>
+        <a href="design-05.html">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--06"></div>
+        <h2>06 Midnight Gold</h2>
+        <p>Dark premium machine with gold accents and heavier display styling.</p>
+        <a href="design-06.html">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--07"></div>
+        <h2>07 Mint Cabinet</h2>
+        <p>Soft green hardware look with rounded buttons and lighter paneling.</p>
+        <a href="design-07.html">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--08"></div>
+        <h2>08 Red Operator</h2>
+        <p>Bold red-and-white styling with a stronger service-machine presence.</p>
+        <a href="design-08.html">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--09"></div>
+        <h2>09 Soft Sky</h2>
+        <p>Clean airy blue theme with softer edges and modern kiosk polish.</p>
+        <a href="design-09.html">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--10"></div>
+        <h2>10 Terminal Grid</h2>
+        <p>Dark control-panel style with angular surfaces and a grid backdrop.</p>
+        <a href="design-10.html">Open Design</a>
+      </article>
+    </section>
+  </div>
+</body>
+</html>
