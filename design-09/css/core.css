@@ -17,9 +17,9 @@
   --badge-radius: 50%;
   --badge-bg: linear-gradient(180deg, #2288f0 0%, #1660b6 100%);
   --badge-color: #ffffff;
-  --brand-logo-padding: 2px;
+  --brand-logo-padding: 10px;
   --brand-logo-filter: none;
-  --brand-logo-transform: translateY(-10px) scale(1.5);
+  --brand-logo-transform: none;
   --slot-width: 126px;
   --slot-height: 12px;
   --slot-radius: 999px;
@@ -207,7 +207,7 @@ body.portal-page--loading {
   padding: var(--brand-logo-padding);
   filter: var(--brand-logo-filter);
   transform: var(--brand-logo-transform);
-  transform-origin: center top;
+  transform-origin: center center;
 }
 
 .brand__mark-text {

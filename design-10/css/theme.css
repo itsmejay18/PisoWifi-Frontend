@@ -17,9 +17,9 @@
   --muted: #9ea8d7;
   --badge-radius: 12px;
   --badge-bg: linear-gradient(180deg, rgba(251, 253, 255, 0.98) 0%, rgba(221, 229, 255, 0.94) 100%);
-  --brand-logo-padding: 2px;
+  --brand-logo-padding: 10px;
   --brand-logo-filter: none;
-  --brand-logo-transform: translateY(-10px) scale(1.5);
+  --brand-logo-transform: none;
   --slot-width: 190px;
   --slot-radius: 2px;
   --slot-bg: linear-gradient(180deg, #05060d 0%, #374196 100%);
