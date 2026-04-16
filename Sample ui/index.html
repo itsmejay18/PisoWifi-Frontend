@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title><{!!TITLE!!}></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="<{!!DESCRIPTION!!}>" name="description" />
+
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="vendosys/public/assets/images/unifi96.png">
+        
+        <link href="vendosys/public/assets/vendor/toast/toast.css?ts=" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="vendosys/public/assets/css/main.css?ts=">
+        <link rel="stylesheet" href="vendosys/public/assets/css/login.css?ts=">
+
+        <link href="vendosys/public/assets/vendor/preloader/preloader.css?ts=" rel="stylesheet" type="text/css"/>
+        <link href="vendosys/public/assets/css/custom.css?ts=" rel="stylesheet" type="text/css"/>
+
+        <link rel="stylesheet" href="style.css">
+
+	<{!!STYLE!!}>
+    </head>
+    
+    <body class="login-page">
+
+        <!-- Pre-loader -->
+        <div class="preloader-wrapper" style="background: var(--bg-main);">
+            <div class="spinner-border">
+                <img class="spin-image" src="vendosys/public/assets/images/spinner-white.png" style="width: 30px; opacity: 0.2;">
+                <span class=""></span>
+            </div>
+        </div>
+        <!-- End Preloader-->
+        <div class="loading-screen-wrapper loader-hidden" style="background: var(--bg-main);">
+            <div class="bouncing-loader"><div ></div><div ></div><div ></div></div>
+            <div class="">
+                <span class=""></span>
+                <div class="snake-loader"></div>
+                <span class=""></span>
+            </div>
+            <div class="loader-title-holder">
+                <label id="message">Loading...</label>
+            </div>
+        </div>
+
+
+        <div class="login-container">
+            <div class="login-card" style="max-width: 500px; ">
+                <div class="login-header">
+                    <img class="logo" src="vendosys/public/assets/images/unifi96.png"> <div class="logo client-font-1"><span></span></div>
+                    <h1></h1>
+                    <p></p>
+                </div>
+
+                <div class="login-body text-center">
+                    <div class="my-2 client-font-1">
+                        <div class="cfs-2" id="statTimeLbl" style="text-align: left;"></div>
+                        <div class="cfs-3 br-2 py-1 client-ttl-1" id="statTime" style="text-align: center;">0h 0m 0s</div>
+                        <div class="cfs-3 br-2 py-1 stat-disconnected client-ttl-1 mt-1" id="statConnected" style="text-align: center;"><{!!STATCONN!!}></div>
+                    </div>
+                    <div class="inline-block" id="holderBConnect">
+                    <button type="submit" id="connect" class="btn-connect btn1 my-1-1 ts-2 bs-1 br-4 client-btn-connect" style="">Connect</button>
+                    </div>
+                        <button type="submit" id="creditinsert" class="btn btn-info btn1 my-1-1 ts-2 bs-1 br-4 client-btn-connect">Insert Coin</button>
+                        <button type="submit" id="wifirates" class="btn btn-info btn1 my-1-1 ts-2 bs-1 br-4 client-btn-connect">WiFi Rates</button>
+                        <button type="submit" id="voucher" class="btn btn-info btn1 my-1-1 ts-2 bs-1 br-4 client-btn-connect">Voucher</button>
+
+                    <div class="mt-2">
+                        <div class="mb-3 client-font-1 cfs-1">
+                            <div class="cfs-1" style="font-size: 0.7rem;" align="left"></div>
+                            <table style="width: 100%; font-size: 0.7rem;">
+                                <tr>
+                                    <td style="text-align: left;">MAC:</td>
+                                    <td style="text-align: right;"><{!!MAC!!}></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">IP:</td>
+                                    <td style="text-align: right;"><{!!IP!!}></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Bandwidth:</td>
+                                    <td style="text-align: right;"><{!!BWDL!!}> <i class="fas fa-arrow-down"></i> / <{!!BWUL!!}> <i class="fas fa-arrow-up"></i></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">Uptime:</td>
+                                    <td id="statUptime" style="text-align: right;"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="login-footer">
+
+                </div>
+            </div>
+
+            <footer class="footer footer-alt text-center cfs-2 mt-2 client-font-1">
+                <script>document.write(new Date().getFullYear())</script> © <{!!TITLE!!}>
+            </footer>
+
+            <!-- MODALS -------------->
+                    <div id="mdl__wifirates" class="modal-overlay">
+			            <div class="modal-card client-font-1 br-2 py-2 px-3">
+			                <div class="modal-header p-0">
+			                    <h2 id="mdl__add_title" class="title-c-1 p-0 text-uppercase text-title-1 cfs-3">WiFi Rates</h2>
+			                    <button class="close-x" data-close></button>
+			                </div>
+			                <form id="f__wifirates" method="POST" class="modal-form">
+
+			                    <div class="table-container">
+			                        <table id="tbl___wifirates" class="data-table tbl-c-2">
+			                            <thead>
+			                                <tr>
+			                                    <th class="tbl-client-cell-1 tbl-col-1" style="max-width: 500px;">Credit</th>
+			                                    <th class="tbl-client-cell-1 tbl-col-1" style="max-width: 500px;">Time</th>
+			                                    <th class="tbl-client-cell-1 tbl-col-1" style="max-width: 500px;">Download</th>
+			                                    <th class="tbl-client-cell-1 tbl-col-1" style="max-width: 500px;">Upload</th>
+			                                </tr>
+			                            </thead>
+			                            <tbody><tr><td class="tbl-client-cell-1" style="">5</td><td class="tbl-client-cell-1" style="">1h 0m 0s</td><td class="tbl-client-cell-1" style="">10 MB</td><td class="tbl-client-cell-1" style="">10 MB</td></tr><tr><td class="tbl-client-cell-1" style="">10</td><td class="tbl-client-cell-1" style="">2h 0m 0s</td><td class="tbl-client-cell-1" style="">10 MB</td><td class="tbl-client-cell-1" style="">10 MB</td></tr><tr><td class="tbl-client-cell-1" style="">25</td><td class="tbl-client-cell-1" style="">5h 0m 0s</td><td class="tbl-client-cell-1" style="">10 MB</td><td class="tbl-client-cell-1" style="">10 MB</td></tr><tr><td class="tbl-client-cell-1" style="">50</td><td class="tbl-client-cell-1" style="">10h 0m 0s</td><td class="tbl-client-cell-1" style="">10 MB</td><td class="tbl-client-cell-1" style="">10 MB</td></tr><tr><td class="tbl-client-cell-1" style="">120</td><td class="tbl-client-cell-1" style="">24h 0m 0s</td><td class="tbl-client-cell-1" style="">10 MB</td><td class="tbl-client-cell-1" style="">10 MB</td></tr><tr><td class="tbl-client-cell-1" style="">840</td><td class="tbl-client-cell-1" style="">168h 0m 0s</td><td class="tbl-client-cell-1" style="">10 MB</td><td class="tbl-client-cell-1" style="">10 MB</td></tr></tbody>
+			                        </table>
+			                    </div>
+			                    <div id="tbl___paging_wifirates"></div>
+
+			                    <div class="modal-actions">
+			                        <button type="button" class="btn btn-secondary px-3 py-1 br-4" data-close>Close</button>
+			                    </div>
+			                </form>
+			            </div>
+			        </div>
+			        
+			        <div id="mdl__creditinsert" class="modal-overlay">
+			            <div class="modal-card client-font-1 br-2 py-2 px-3" style="max-width: 400px;">
+			                <div class="modal-header p-0">
+			                    <span id="mdl__add_title" class="title-c-1 p-0 text-uppercase text-title-1 cfs-3">Insert Credit</span>
+			                    <button class="close-x b_action" data-target="ciClose" data-close></button>
+			                </div>
+			                <form id="f__creditinsert" method="POST" class="modal-form">
+
+			                    <div class="">
+			                        
+			                        <div class="text-left"><h1 class="text-insert-label">Credit: <span id="ci___credit">0</span> Php</h1></div>
+			                        <div class="text-left"><h1 class="text-insert-label" id="">Time: <span id="ci___credit_time">0s</span></h1></div>
+			                        <div id="" class="mt-2">
+			                            <div class="progress-wrapper">
+			                                <div class="progress-label">
+			                                    <span></span>
+			                                    <span class="text-primary"></span>
+			                                </div>
+			                                <div class="progress-track progress-track-1">
+			                                    <div class="progress-fill progress-fill-1 bg-progress-fill" id="ci___progress_time" style="width: 100%;"></div>
+			                                </div>
+			                            </div>
+			                        </div>
+
+			                    </div>
+
+			                    <div class="modal-actions">
+			                        <button type="button" class="btn btn-secondary px-3 py-1 br-4 b_action" data-target="ciClose" data-close>Done</button>
+			                    </div>
+			                </form>
+			            </div>
+			        </div>
+			        
+			        <div id="mdl__voucher" class="modal-overlay" style="">
+			            <div class="modal-card client-font-1 br-2 py-2 px-3">
+			                <div class="modal-header p-0">
+			                    <h2 id="mdl__voucher_title" class="title-c-1 p-0 text-uppercase text-title-1 cfs-3">Voucher</h2>
+			                    <button class="close-x" data-close></button>
+			                </div>
+			                <form id="f__voucher" method="POST" class="modal-form">
+
+			                    <div class="input-group mb-2">
+			                        <label for="code">Code</label>
+			                        <input type="text" id="code" name="code" placeholder="">
+			                    </div>
+
+			                    <div class="modal-actions">
+			                        <button type="button" class="btn btn-secondary px-3 py-1 br-4" data-close>Close</button>
+			                        <button type="button" class="btn btn-info px-3 py-1 br-4" id="usevoucher">Use Voucher</button>
+			                    </div>
+			                </form>
+			            </div>
+			        </div>
+            <!-- MODALS -------------->
+			        
+
+            <{!!MODALS!!}>
+
+        </div>
+
+        <{!!VARS!!}>
+	
+        <script src="script.js"></script>
+
+        <script src="vendosys/public/assets/vendor/toast/toast.js"></script>
+        <script src="vendosys/public/assets/js/main.js?ts="></script>
+        <script src="vendosys/public/assets/js/modal.js"></script>
+
+        <script src="vendosys/public/assets/js/jquery.3.2.1.min.js"></script>
+        <script src="vendosys/public/assets/vendor/preloader/preloader.js?ts="></script>
+
+        <script src="vendosys/public/js/gfnc.js?ts="></script>
+        <script src="vendosys/public/js/tstr.js"></script>
+        <script src="vendosys/public/js/client/client.js?ts="></script>
+
+    </body>
+
+</html>

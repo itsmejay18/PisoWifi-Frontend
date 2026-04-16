@@ -1,0 +1,26 @@
+
+EDIT LANG SA:
+
+-index.html
+-style.css
+
+AYAW NA ASSETS KAY DI NA MA APPLY.
+I OVERRIDE LANG ANG STYLE SA style.css
+
+element ids like id="connect", etc, i leave lang na as it is, sa buttons, status..
+kay di na mogana if ever ilisan ang ids.
+
+
+IF POSSIBLE PASAGDI LANG ANG CUSTOM TAGS LIKE: 
+<{!!TITLE!!}> or <{!!MAC!!}>, etc...
+
+
+CASES:
+<link href="vendosys/public/assets/css/custom.css?ts=" rel="stylesheet" type="text/css"/>
+final:
+<link href="vendosys/public/assets/css/custom.css?ts=<{!!TIMESTAMP!!}>" rel="stylesheet" type="text/css"/>
+on deploy:
+<link href="vendosys/public/assets/css/custom.css?ts=202604140800" rel="stylesheet" type="text/css"/>
+
+<{!!TIMESTAMP!!}> = will replace current timestamp on run
+why needed sometimes ? if ever naay cnages on run tapos naka cookie ang browser sa user, this will reset / reload the styles / scripts. use if later naay changes sa style.

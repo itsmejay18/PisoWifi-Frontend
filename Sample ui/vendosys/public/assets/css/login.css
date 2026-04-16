@@ -1,0 +1,128 @@
+/* Centering the entire container */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: var(--bg-main);
+}
+
+.login-card {
+    background: var(--bg-surface);
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 15px 35px var(--shadow);
+    text-align: center;
+}
+
+.login-header {
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    font-size: 1.6rem;
+    margin-top: 15px;
+    color: var(--text-main);
+}
+
+.login-header p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+
+/* Form Styles */
+.login-form {
+    text-align: left;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    color: var(--text-main);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* Options (Remember/Forgot) */
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 25px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--text-dim);
+}
+
+.forgot-pass {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.forgot-pass:hover {
+    text-decoration: underline;
+}
+
+/* Login Button */
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.btn-login:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.login-footer {
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+.login-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+}

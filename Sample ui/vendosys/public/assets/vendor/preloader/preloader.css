@@ -1,0 +1,106 @@
+
+.preloader-wrapper, .preloader-wrapper-dark, .preloader-wrapper .dark {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 10000000000;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all .4s ease;
+}
+
+.fade-out-animation {
+	opacity: 0;
+	visibility: hidden;
+}
+
+.fade-in-animation {
+	opacity: 1;
+	visibility: visible;
+}
+
+
+.loading-screen-wrapper {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 10000000000;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	transition: all .4s ease;
+}
+
+.loader-hidden {
+	opacity: 0 !important;
+	visibility: hidden !important;
+}
+
+.loader-title-holder {
+	margin-top: 8px;
+	font-size: 0.8rem;
+}
+
+.preloader-wrapper .beat img, .preloader-wrapper-dark .beat img {
+  position:absolute;
+  left:0;
+  right:0;
+  margin:0 auto;
+  -webkit-transition: opacity 7s ease-in-out;
+  -moz-transition: opacity 7s ease-in-out;
+  -o-transition: opacity 7s ease-in-out;
+  transition: opacity 7s ease-in-out;}
+
+ @keyframes preloaderWrapperBeat {
+  0% {
+    opacity:1;
+  }
+  14% {
+    opacity:1;
+  }
+  28% {
+    opacity:0;
+  }
+  42% {
+    opacity:0;
+  }
+  70% {
+    opacity:0;
+  }
+}
+
+.preloader-wrapper .beat img.top, .preloader-wrapper-dark .beat img.top { 
+  animation-name: preloaderWrapperBeat; 
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-duration: 1s;
+  animation-direction: alternate;
+
+}
+
+.preloader-wrapper .c-beat2, .loading-screen-wrapper .c-beat2 {
+	font-size: 150px;
+	color: #e00;
+	animation: c-beat .5s infinite alternate;
+	transform-origin: center;
+}
+@keyframes c-beat {
+	to { transform: scale(1.1); }
+}
+
+.preloader-wrapper .icon, .preloader-wrapper-dark .icon, .loading-screen-wrapper .icon, .loading-screen-wrapper-dark .icon {
+	width: 128px;
+	height: 128px;
+}
+
+.preloader-wrapper .dark, .preloader-wrapper-dark, .loading-screen-wrapper .dark, .loading-screen-wrapper-dark {
+	background-color: #1a2035;
+}
