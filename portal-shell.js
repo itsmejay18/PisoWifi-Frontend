@@ -1,8 +1,9 @@
 document.body.classList.add("portal-page", "portal-page--loading");
 
 var portalLoadingStartedAt = Date.now();
+var portalLoaderHideTimeout = null;
 
-function finishPortalLoading() {
+function hidePortalLoader() {
   var loader = document.getElementById("appLoader");
 
   document.body.classList.remove("portal-page--loading");
@@ -13,12 +14,36 @@ function finishPortalLoading() {
 
   loader.dataset.hidden = "true";
   loader.classList.add("app-loader--hidden");
+}
 
-  window.setTimeout(function () {
-    if (loader.parentNode) {
-      loader.parentNode.removeChild(loader);
-    }
-  }, 360);
+function showPortalLoader(durationMs) {
+  var loader = document.getElementById("appLoader");
+
+  if (!loader) {
+    return;
+  }
+
+  if (portalLoaderHideTimeout !== null) {
+    window.clearTimeout(portalLoaderHideTimeout);
+    portalLoaderHideTimeout = null;
+  }
+
+  loader.dataset.hidden = "false";
+  loader.classList.remove("app-loader--hidden");
+  document.body.classList.add("portal-page--loading");
+
+  if (durationMs === 0) {
+    return;
+  }
+
+  portalLoaderHideTimeout = window.setTimeout(function () {
+    portalLoaderHideTimeout = null;
+    hidePortalLoader();
+  }, typeof durationMs === "number" ? durationMs : 420);
+}
+
+function finishPortalLoading() {
+  hidePortalLoader();
 }
 
 function schedulePortalLoadingFinish() {
@@ -26,6 +51,8 @@ function schedulePortalLoadingFinish() {
 
   window.setTimeout(finishPortalLoading, remainingDelay);
 }
+
+window.triggerPortalActionLoading = showPortalLoader;
 
 if (document.readyState === "complete") {
   schedulePortalLoadingFinish();
@@ -47,8 +74,8 @@ if (!document.getElementById("coinButton")) {
     machineLabel: document.body.dataset.machineLabel || "UniFi hotspot portal",
     brandTitle: document.body.dataset.brandTitle || "UniFi",
     brandSubtitle: document.body.dataset.brandSubtitle || "Hotspot Internet Access",
-    logoSrc: document.body.dataset.logoSrc || "Sample%20ui/vendosys/public/assets/images/unifi96.png",
-    logoAlt: document.body.dataset.logoAlt || "UniFi logo",
+    logoSrc: document.body.dataset.logoSrc || "Sample%20ui/vendosys/public/assets/images/unifi-emblem.png",
+    logoAlt: document.body.dataset.logoAlt || "UniFi emblem",
     badgeText: document.body.dataset.badgeText || "",
     coinTitle: document.body.dataset.coinTitle || "Insert Credit",
     coinCopy: document.body.dataset.coinCopy || "Insert coin credits, wait for the machine to total them, then continue your session.",
@@ -64,8 +91,7 @@ if (!document.getElementById("coinButton")) {
     useVoucherLabel: document.body.dataset.useVoucherLabel || "Use Voucher",
     backLabel: document.body.dataset.backLabel || "Close",
     voucherFieldLabel: document.body.dataset.voucherFieldLabel || "Code",
-    voucherPlaceholder: document.body.dataset.voucherPlaceholder || "Enter voucher code",
-    voucherHint: document.body.dataset.voucherHint || "Sample codes: UNIFI5, UNIFI10, UNIFI25, UNIFI50, UNIFI120, UNIFI840"
+    voucherPlaceholder: document.body.dataset.voucherPlaceholder || "Enter voucher code"
   };
   var badgeMarkup = config.logoSrc
     ? '<img class="brand__logo-img" src="' + escapeHtml(config.logoSrc) + '" alt="' + escapeHtml(config.logoAlt) + '">'
@@ -187,7 +213,6 @@ if (!document.getElementById("coinButton")) {
       '    <p class="modal__text">' + escapeHtml(config.voucherCopy) + "</p>",
       '    <label class="voucher-label" for="voucherInput">' + escapeHtml(config.voucherFieldLabel) + "</label>",
       '    <input class="voucher-input" id="voucherInput" type="text" inputmode="text" autocomplete="off" placeholder="' + escapeHtml(config.voucherPlaceholder) + '">',
-      '    <div class="modal__hint">' + escapeHtml(config.voucherHint) + "</div>",
       '    <div class="modal__error" id="voucherError"></div>',
       '    <div class="modal__actions">',
       '      <button class="button button--primary" id="useVoucherButton" type="button">' + escapeHtml(config.useVoucherLabel) + "</button>",
@@ -199,6 +224,7 @@ if (!document.getElementById("coinButton")) {
   );
 
   initializePortalViewportFit();
+  registerPortalActionLoading();
 }
 
 function initializePortalViewportFit() {
@@ -253,4 +279,22 @@ function initializePortalViewportFit() {
   }
 
   queueFitPortalStage();
+}
+
+function registerPortalActionLoading() {
+  if (document.body.dataset.portalActionLoadingBound === "true") {
+    return;
+  }
+
+  document.body.dataset.portalActionLoadingBound = "true";
+
+  document.addEventListener("click", function (event) {
+    var trigger = event.target.closest(".button");
+
+    if (!trigger || trigger.disabled) {
+      return;
+    }
+
+    showPortalLoader(420);
+  });
 }

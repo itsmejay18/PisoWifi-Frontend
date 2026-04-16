@@ -89,6 +89,10 @@
   elements.closeVoucherButton.addEventListener("click", closeVoucherModal);
   elements.voucherInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
+      if (typeof window.triggerPortalActionLoading === "function") {
+        window.triggerPortalActionLoading(420);
+      }
+
       applyVoucher();
     }
   });
