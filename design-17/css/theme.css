@@ -1,0 +1,120 @@
+:root {
+  --body-bg:
+    radial-gradient(circle at 16% 14%, rgba(255, 97, 97, 0.18) 0%, transparent 22%),
+    radial-gradient(circle at 86% 8%, rgba(255, 170, 94, 0.14) 0%, transparent 18%),
+    linear-gradient(180deg, #13090b 0%, #050304 100%);
+  --body-accent: transparent;
+  --body-text: #fff0f0;
+  --machine-radius: 18px;
+  --machine-bg: linear-gradient(180deg, rgba(22, 8, 10, 0.98) 0%, rgba(8, 4, 5, 0.98) 100%);
+  --machine-border: rgba(255, 94, 94, 0.22);
+  --machine-shadow: 0 30px 64px rgba(0, 0, 0, 0.56);
+  --panel-radius: 16px;
+  --panel-bg: linear-gradient(180deg, rgba(20, 7, 10, 0.94) 0%, rgba(8, 4, 5, 0.98) 100%);
+  --panel-border: rgba(255, 94, 94, 0.18);
+  --text: #fff4f4;
+  --muted: #c39c9c;
+  --badge-radius: 16px;
+  --badge-bg: linear-gradient(180deg, #ff6d6d 0%, #8a0f1f 100%);
+  --brand-logo-filter: hue-rotate(-25deg) saturate(1.2) brightness(1.08);
+  --slot-bg: linear-gradient(180deg, #050102 0%, #8a1824 100%);
+  --display-radius: 16px;
+  --display-bg: linear-gradient(180deg, #120507 0%, #230c11 100%);
+  --display-border: rgba(255, 132, 132, 0.2);
+  --display-text: #ff9f86;
+  --waiting: #7f5b61;
+  --connected: #ffb36a;
+  --message-color: #f3c4bc;
+  --primary-bg: linear-gradient(180deg, #ff5d5d 0%, #c1172b 100%);
+  --primary-shadow: 0 16px 30px rgba(193, 23, 43, 0.28);
+  --danger-bg: linear-gradient(180deg, #ffbe59 0%, #cb7f12 100%);
+  --danger-text: #291706;
+  --danger-shadow: none;
+  --secondary-bg: rgba(26, 10, 13, 0.96);
+  --secondary-text: #fff1f1;
+  --secondary-border: rgba(255, 106, 106, 0.16);
+  --secondary-shadow: none;
+  --info-bg: rgba(23, 9, 11, 0.96);
+  --info-border: rgba(255, 106, 106, 0.16);
+  --footer-bg: rgba(18, 7, 9, 0.98);
+  --footer-border: rgba(255, 106, 106, 0.14);
+  --modal-overlay: rgba(7, 2, 3, 0.88);
+  --modal-card-bg: linear-gradient(180deg, rgba(21, 7, 9, 0.98) 0%, rgba(8, 4, 5, 0.98) 100%);
+  --modal-card-border: rgba(255, 106, 106, 0.18);
+  --modal-card-shadow: 0 24px 52px rgba(0, 0, 0, 0.56);
+  --voucher-input-bg: rgba(25, 10, 12, 0.98);
+  --voucher-input-border: rgba(255, 106, 106, 0.16);
+  --accent-text: #ff8a7e;
+  --loader-overlay-bg: rgba(10, 4, 5, 0.92);
+  --loader-logo-bg: linear-gradient(180deg, #ff7a7a 0%, #9c1527 100%);
+  --loader-logo-shadow: 0 0 28px rgba(255, 94, 94, 0.2);
+  --loader-spinner-track: rgba(255, 94, 94, 0.12);
+  --loader-spinner-top: #ff8a7e;
+  --loader-spinner-right: #ffcb6b;
+  --loader-text-color: #fff4f4;
+}
+
+body.portal-page {
+  font-family: "Arial Black", "Segoe UI", sans-serif;
+  background-image:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0 8px, transparent 8px 16px),
+    var(--body-bg);
+}
+
+.machine::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(255, 94, 94, 0.16);
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+  pointer-events: none;
+}
+
+.brand {
+  grid-template-columns: 82px 1fr;
+  align-items: center;
+  justify-items: start;
+  text-align: left;
+}
+
+.brand__badge {
+  clip-path: polygon(18% 0, 82% 0, 100% 18%, 100% 82%, 82% 100%, 18% 100%, 0 82%, 0 18%);
+  box-shadow: 0 0 18px rgba(255, 94, 94, 0.18);
+}
+
+.display::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 94, 94, 0.08), transparent 28%),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0 2px, transparent 2px 6px);
+  pointer-events: none;
+}
+
+.button,
+.machine__panel,
+.display,
+.info-box,
+.footer__item,
+.modal__card {
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: linear-gradient(120deg, transparent 20%, rgba(255, 255, 255, 0.18) 50%, transparent 80%);
+  transform: translateX(-120%);
+  transition: transform 0.28s ease;
+  pointer-events: none;
+}
+
+.button:hover::before {
+  transform: translateX(120%);
+}
+
+.status.is-connected .status__light {
+  box-shadow: 0 0 0 7px rgba(255, 179, 106, 0.12), 0 0 16px rgba(255, 179, 106, 0.34);
+}

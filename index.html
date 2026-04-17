@@ -205,6 +205,16 @@
     .swatch--08 { background: linear-gradient(135deg, #fff7f7 0%, #d52c2c 100%); }
     .swatch--09 { background: linear-gradient(135deg, #ffffff 0%, #2b7ed5 100%); }
     .swatch--10 { background: linear-gradient(135deg, #0c1122 0%, #7a86ff 100%); }
+    .swatch--11 { background: linear-gradient(135deg, #170a06 0%, #ff8b43 100%); }
+    .swatch--12 { background: linear-gradient(135deg, #fff0f8 0%, #8f4dff 100%); }
+    .swatch--13 { background: linear-gradient(135deg, #040907 0%, #91ff46 100%); }
+    .swatch--14 { background: linear-gradient(135deg, #091122 0%, #a393ff 100%); }
+    .swatch--15 { background: linear-gradient(135deg, #110f0b 0%, #e7c56a 100%); }
+    .swatch--16 { background: linear-gradient(135deg, #052834 0%, #5cefd3 100%); }
+    .swatch--17 { background: linear-gradient(135deg, #080506 0%, #ff4b4b 100%); }
+    .swatch--18 { background: linear-gradient(135deg, #f8fcff 0%, #87ddff 100%); }
+    .swatch--19 { background: linear-gradient(135deg, #1a1138 0%, #ff61bd 55%, #38f4ff 100%); }
+    .swatch--20 { background: linear-gradient(135deg, #071227 0%, #70ead3 45%, #b18cff 100%); }
 
     .card h2 {
       margin: 0;
@@ -319,10 +329,71 @@
         <p>Dark control-panel style with angular surfaces and a grid backdrop.</p>
         <a href="design-10/">Open Design</a>
       </article>
+      <article class="card">
+        <div class="swatch swatch--11"></div>
+        <h2>11 Meteor Forge</h2>
+        <p>Molten-black cabinet with ember rails and punchier arena machine energy.</p>
+        <a href="design-11/">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--12"></div>
+        <h2>12 Sakura Drift</h2>
+        <p>Blossom-glass interface mixing soft pink light with futuristic neon trim.</p>
+        <a href="design-12/">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--13"></div>
+        <h2>13 Hex Vanguard</h2>
+        <p>Tactical acid-green layout with a sharper gaming HUD feel.</p>
+        <a href="design-13/">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--14"></div>
+        <h2>14 Lunar Ronin</h2>
+        <p>Moonlit obsidian machine with silver edges and a calm samurai mood.</p>
+        <a href="design-14/">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--15"></div>
+        <h2>15 Victory Gold</h2>
+        <p>Premium championship cabinet with gold hardware and broadcast polish.</p>
+        <a href="design-15/">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--16"></div>
+        <h2>16 Tidal Prism</h2>
+        <p>Oceanic holo panel with liquid gradients and bright aqua glass.</p>
+        <a href="design-16/">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--17"></div>
+        <h2>17 Crimson Protocol</h2>
+        <p>Tactical red-alert styling with carbon textures and command-deck cues.</p>
+        <a href="design-17/">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--18"></div>
+        <h2>18 Frost Nova</h2>
+        <p>Frosted sci-fi shell with ice-blue glow and clean chrome surfaces.</p>
+        <a href="design-18/">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--19"></div>
+        <h2>19 Pixel Pop</h2>
+        <p>Retro arcade burst with playful color blocking and CRT-inspired accents.</p>
+        <a href="design-19/">Open Design</a>
+      </article>
+      <article class="card">
+        <div class="swatch swatch--20"></div>
+        <h2>20 Aurora Shrine</h2>
+        <p>Celestial kiosk with aurora glow, shrine framing, and dreamy depth.</p>
+        <a href="design-20/">Open Design</a>
+      </article>
     </section>
   </div>
   <script>
     (function () {
+      var LOADER_DURATION_MS = 5000;
       var startedAt = Date.now();
       var landingLoaderHideTimeout = null;
 
@@ -362,7 +433,7 @@
         landingLoaderHideTimeout = window.setTimeout(function () {
           landingLoaderHideTimeout = null;
           hideLandingLoading();
-        }, typeof durationMs === "number" ? durationMs : 420);
+        }, typeof durationMs === "number" ? durationMs : LOADER_DURATION_MS);
       }
 
       function finishLandingLoading() {
@@ -370,7 +441,7 @@
       }
 
       function scheduleFinish() {
-        var remainingDelay = Math.max(0, 900 - (Date.now() - startedAt));
+        var remainingDelay = Math.max(0, LOADER_DURATION_MS - (Date.now() - startedAt));
         window.setTimeout(finishLandingLoading, remainingDelay);
       }
 
@@ -387,11 +458,11 @@
           }
 
           event.preventDefault();
-          showLandingLoading(420);
+          showLandingLoading(LOADER_DURATION_MS);
 
           window.setTimeout(function () {
             window.location.href = link.href;
-          }, 220);
+          }, LOADER_DURATION_MS);
         });
       });
     }());

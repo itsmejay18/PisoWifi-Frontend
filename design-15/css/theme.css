@@ -1,0 +1,101 @@
+:root {
+  --body-bg:
+    radial-gradient(circle at 50% -10%, rgba(228, 190, 89, 0.18) 0%, transparent 30%),
+    linear-gradient(180deg, #16120b 0%, #080706 100%);
+  --body-accent: transparent;
+  --body-text: #f5edd7;
+  --machine-radius: 24px;
+  --machine-bg: linear-gradient(180deg, rgba(28, 22, 14, 0.98) 0%, rgba(10, 9, 8, 0.98) 100%);
+  --machine-border: rgba(228, 190, 89, 0.24);
+  --machine-shadow: 0 30px 64px rgba(0, 0, 0, 0.54);
+  --panel-radius: 22px;
+  --panel-bg: linear-gradient(180deg, rgba(19, 15, 10, 0.96) 0%, rgba(8, 7, 6, 0.98) 100%);
+  --panel-border: rgba(228, 190, 89, 0.18);
+  --text: #fff8e7;
+  --muted: #c1ad7b;
+  --badge-radius: 18px;
+  --badge-bg: linear-gradient(180deg, #ffe7a1 0%, #b88a28 100%);
+  --brand-logo-filter: sepia(0.8) saturate(1.15) hue-rotate(-6deg) brightness(1.05);
+  --slot-bg: linear-gradient(180deg, #040301 0%, #72530d 100%);
+  --display-radius: 20px;
+  --display-bg: linear-gradient(180deg, #0e0b07 0%, #1b1409 100%);
+  --display-border: rgba(228, 190, 89, 0.18);
+  --display-text: #f6d46e;
+  --waiting: #8d7b4d;
+  --connected: #f3cb62;
+  --message-color: #decb9c;
+  --primary-bg: linear-gradient(180deg, #f5d474 0%, #c79626 100%);
+  --primary-text: #2b1f08;
+  --primary-shadow: 0 14px 28px rgba(199, 150, 38, 0.26);
+  --danger-bg: linear-gradient(180deg, #9e7d34 0%, #6e5319 100%);
+  --danger-shadow: none;
+  --secondary-bg: rgba(26, 20, 13, 0.96);
+  --secondary-text: #fff4d8;
+  --secondary-border: rgba(228, 190, 89, 0.16);
+  --secondary-shadow: none;
+  --info-bg: rgba(23, 18, 12, 0.96);
+  --info-border: rgba(228, 190, 89, 0.16);
+  --footer-bg: rgba(22, 17, 12, 0.98);
+  --footer-border: rgba(228, 190, 89, 0.14);
+  --modal-overlay: rgba(7, 5, 3, 0.88);
+  --modal-card-bg: linear-gradient(180deg, rgba(24, 19, 13, 0.98) 0%, rgba(10, 8, 7, 0.98) 100%);
+  --modal-card-border: rgba(228, 190, 89, 0.18);
+  --modal-card-shadow: 0 24px 50px rgba(0, 0, 0, 0.5);
+  --voucher-input-bg: rgba(26, 20, 13, 0.98);
+  --voucher-input-border: rgba(228, 190, 89, 0.14);
+  --accent-text: #f2ca62;
+  --loader-overlay-bg: rgba(9, 7, 4, 0.9);
+  --loader-logo-bg: linear-gradient(180deg, #ffe79c 0%, #b8892a 100%);
+  --loader-logo-shadow: 0 0 28px rgba(228, 190, 89, 0.18);
+  --loader-spinner-track: rgba(228, 190, 89, 0.12);
+  --loader-spinner-top: #f8d774;
+  --loader-spinner-right: #d3a743;
+  --loader-text-color: #fff8e7;
+}
+
+body.portal-page {
+  font-family: "Arial Black", "Segoe UI", sans-serif;
+  background-image:
+    repeating-linear-gradient(125deg, transparent 0 28px, rgba(255, 220, 130, 0.03) 28px 30px),
+    var(--body-bg);
+}
+
+.machine::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(228, 190, 89, 0.16);
+  clip-path: polygon(0 10px, 10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px));
+  pointer-events: none;
+}
+
+.brand__badge {
+  box-shadow: 0 16px 28px rgba(228, 190, 89, 0.16);
+}
+
+.display::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 234, 173, 0.08), transparent 34%),
+    linear-gradient(90deg, transparent 0%, rgba(246, 212, 110, 0.06) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.button,
+.machine__panel,
+.display,
+.info-box,
+.footer__item,
+.modal__card {
+  clip-path: polygon(12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 12px), calc(100% - 12px) 100%, 12px 100%, 0 calc(100% - 12px), 0 12px);
+}
+
+.button {
+  letter-spacing: 0.1em;
+}
+
+.footer__item {
+  border-top-color: rgba(247, 213, 113, 0.3);
+}

@@ -1,0 +1,125 @@
+:root {
+  --body-bg:
+    radial-gradient(circle at 18% 14%, rgba(188, 238, 255, 0.28) 0%, transparent 24%),
+    radial-gradient(circle at 84% 10%, rgba(138, 211, 255, 0.18) 0%, transparent 22%),
+    linear-gradient(180deg, #eef7ff 0%, #d8eaf8 52%, #c5ddf0 100%);
+  --body-accent: rgba(255, 255, 255, 0.7);
+  --body-text: #1a3550;
+  --machine-radius: 34px;
+  --machine-bg: linear-gradient(180deg, rgba(248, 252, 255, 0.86) 0%, rgba(224, 239, 248, 0.76) 100%);
+  --machine-border: rgba(126, 185, 231, 0.3);
+  --machine-shadow: 0 28px 56px rgba(66, 110, 145, 0.16);
+  --panel-radius: 28px;
+  --panel-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(234, 244, 251, 0.82) 100%);
+  --panel-border: rgba(141, 196, 236, 0.3);
+  --text: #17324b;
+  --muted: #5d7b96;
+  --badge-bg: linear-gradient(180deg, #e8f9ff 0%, #7ec9f0 100%);
+  --brand-logo-filter: brightness(1.15) saturate(0.7);
+  --slot-bg: linear-gradient(180deg, #d9f6ff 0%, #79b8e0 100%);
+  --display-bg: linear-gradient(180deg, #12334a 0%, #081b2a 100%);
+  --display-border: rgba(165, 224, 255, 0.24);
+  --display-text: #e8fdff;
+  --waiting: #9ab1c6;
+  --connected: #93f4ff;
+  --message-color: #d6f6ff;
+  --primary-bg: linear-gradient(180deg, #9ceeff 0%, #5aa7de 100%);
+  --primary-text: #18344d;
+  --primary-shadow: 0 14px 28px rgba(90, 167, 222, 0.24);
+  --danger-bg: linear-gradient(180deg, #d7f4ff 0%, #a8d5ef 100%);
+  --danger-text: #234a67;
+  --danger-shadow: none;
+  --secondary-bg: rgba(255, 255, 255, 0.8);
+  --secondary-text: #22425f;
+  --secondary-border: rgba(149, 199, 233, 0.32);
+  --secondary-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  --info-bg: rgba(255, 255, 255, 0.72);
+  --info-border: rgba(149, 199, 233, 0.32);
+  --footer-bg: rgba(255, 255, 255, 0.74);
+  --footer-border: rgba(149, 199, 233, 0.28);
+  --modal-overlay: rgba(189, 219, 241, 0.46);
+  --modal-card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.94) 0%, rgba(231, 243, 251, 0.92) 100%);
+  --modal-card-border: rgba(149, 199, 233, 0.34);
+  --modal-card-shadow: 0 24px 52px rgba(72, 120, 158, 0.16);
+  --voucher-input-bg: rgba(255, 255, 255, 0.92);
+  --voucher-input-border: rgba(149, 199, 233, 0.32);
+  --accent-text: #4b97cf;
+  --loader-overlay-bg: rgba(233, 244, 252, 0.9);
+  --loader-logo-bg: linear-gradient(180deg, #f0fbff 0%, #8fd4f5 100%);
+  --loader-logo-shadow: 0 16px 32px rgba(125, 189, 232, 0.18);
+  --loader-spinner-track: rgba(106, 173, 220, 0.12);
+  --loader-spinner-top: #7ebeea;
+  --loader-spinner-right: #9cf1ff;
+  --loader-text-color: #17324b;
+}
+
+body.portal-page {
+  font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+}
+
+body.portal-page::before,
+body.portal-page::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+body.portal-page::before {
+  width: 300px;
+  height: 300px;
+  top: -70px;
+  left: -40px;
+  background: rgba(198, 242, 255, 0.28);
+}
+
+body.portal-page::after {
+  width: 260px;
+  height: 260px;
+  right: -30px;
+  bottom: -40px;
+  background: rgba(168, 214, 245, 0.22);
+}
+
+.machine,
+.machine__panel,
+.modal__card {
+  backdrop-filter: blur(18px);
+}
+
+.brand {
+  grid-template-columns: 82px 1fr;
+  align-items: center;
+  justify-items: start;
+  text-align: left;
+}
+
+.machine::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border-radius: calc(var(--machine-radius) - 10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+}
+
+.display::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.14) 0%, transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 34%);
+  pointer-events: none;
+}
+
+.button {
+  border-radius: 22px;
+}
+
+.footer__item,
+.info-box,
+.modal__card {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
