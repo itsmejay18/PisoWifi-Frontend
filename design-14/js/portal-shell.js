@@ -1,5 +1,6 @@
 document.body.classList.add("portal-page", "portal-page--loading");
 
+var PORTAL_LOADER_DURATION_MS = 3000;
 var portalLoadingStartedAt = Date.now();
 var portalLoaderHideTimeout = null;
 
@@ -39,7 +40,7 @@ function showPortalLoader(durationMs) {
   portalLoaderHideTimeout = window.setTimeout(function () {
     portalLoaderHideTimeout = null;
     hidePortalLoader();
-  }, typeof durationMs === "number" ? durationMs : 420);
+  }, typeof durationMs === "number" ? durationMs : PORTAL_LOADER_DURATION_MS);
 }
 
 function finishPortalLoading() {
@@ -47,7 +48,7 @@ function finishPortalLoading() {
 }
 
 function schedulePortalLoadingFinish() {
-  var remainingDelay = Math.max(0, 900 - (Date.now() - portalLoadingStartedAt));
+  var remainingDelay = Math.max(0, PORTAL_LOADER_DURATION_MS - (Date.now() - portalLoadingStartedAt));
 
   window.setTimeout(finishPortalLoading, remainingDelay);
 }
@@ -295,7 +296,7 @@ function registerPortalActionLoading() {
       return;
     }
 
-    showPortalLoader(420);
+    showPortalLoader(PORTAL_LOADER_DURATION_MS);
   });
 }
 

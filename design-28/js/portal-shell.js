@@ -1,5 +1,6 @@
 document.body.classList.add("portal-page", "portal-page--loading");
 
+var PORTAL_LOADER_DURATION_MS = 3000;
 var portalLoadingStartedAt = Date.now();
 var portalLoaderHideTimeout = null;
 
@@ -39,7 +40,7 @@ function showPortalLoader(durationMs) {
   portalLoaderHideTimeout = window.setTimeout(function () {
     portalLoaderHideTimeout = null;
     hidePortalLoader();
-  }, typeof durationMs === "number" ? durationMs : 420);
+  }, typeof durationMs === "number" ? durationMs : PORTAL_LOADER_DURATION_MS);
 }
 
 function finishPortalLoading() {
@@ -47,7 +48,7 @@ function finishPortalLoading() {
 }
 
 function schedulePortalLoadingFinish() {
-  var remainingDelay = Math.max(0, 900 - (Date.now() - portalLoadingStartedAt));
+  var remainingDelay = Math.max(0, PORTAL_LOADER_DURATION_MS - (Date.now() - portalLoadingStartedAt));
 
   window.setTimeout(finishPortalLoading, remainingDelay);
 }
@@ -78,20 +79,24 @@ if (!document.getElementById("coinButton")) {
     logoAlt: document.body.dataset.logoAlt || "UniFi logo",
     badgeText: document.body.dataset.badgeText || "",
     coinTitle: document.body.dataset.coinTitle || "Insert Credit",
-    coinCopy: document.body.dataset.coinCopy || "Insert coin credits, wait for the machine to total them, then continue your session.",
+    coinCopy:
+      document.body.dataset.coinCopy ||
+      "Waiting for coin input from the vendo. Insert a coin on the machine, then continue once credit is detected.",
     ratesTitle: document.body.dataset.ratesTitle || "WiFi Rates",
     ratesCopy: document.body.dataset.ratesCopy || "Available hotspot rates and included limits.",
     voucherTitle: document.body.dataset.voucherTitle || "Voucher",
-    voucherCopy: document.body.dataset.voucherCopy || "Enter your voucher code to load internet time.",
+    voucherPlaceholder: document.body.dataset.voucherPlaceholder || "Enter voucher code",
     insertLabel: document.body.dataset.insertLabel || "Insert Coin",
     ratesLabel: document.body.dataset.ratesLabel || "WiFi Rates",
-    voucherLabel: document.body.dataset.voucherLabel || "Voucher",
-    disconnectLabel: document.body.dataset.disconnectLabel || "Disconnect",
-    continueLabel: document.body.dataset.continueLabel || "Done",
-    useVoucherLabel: document.body.dataset.useVoucherLabel || "Use Voucher",
+    voucherLabel: document.body.dataset.voucherLabel || "Redeem",
+    disconnectLabel: document.body.dataset.disconnectLabel || "Pause",
+    continueLabel: document.body.dataset.continueLabel || "Continue",
     backLabel: document.body.dataset.backLabel || "Close",
-    voucherFieldLabel: document.body.dataset.voucherFieldLabel || "Code",
-    voucherPlaceholder: document.body.dataset.voucherPlaceholder || "Enter voucher code"
+    voucherFieldLabel: document.body.dataset.voucherFieldLabel || "Voucher Code",
+    heroHeadline: document.body.dataset.heroHeadline || "Detailed WiFi Portal",
+    heroCopy:
+      document.body.dataset.heroCopy ||
+      "Insert coins, extend your session, or redeem a code from one focused control deck."
   };
   var badgeMarkup = config.logoSrc
     ? '<img class="brand__logo-img" src="' + escapeHtml(config.logoSrc) + '" alt="' + escapeHtml(config.logoAlt) + '">'
@@ -124,6 +129,10 @@ if (!document.getElementById("coinButton")) {
       '<div class="portal-stage" id="portalStage">',
       '<main class="machine" aria-label="' + escapeHtml(config.machineLabel) + '">',
       '  <section class="machine__top">',
+      '    <div class="hero-hud">',
+      '      <span class="hero-hud__pill">Premium Hotspot</span>',
+      '      <span class="hero-hud__pill hero-hud__pill--accent">Design 21-40</span>',
+      "    </div>",
       '    <div class="brand">',
       '      <div class="brand__badge" aria-hidden="true">',
       "        " + badgeMarkup,
@@ -133,47 +142,126 @@ if (!document.getElementById("coinButton")) {
       '        <p class="brand__subtitle">' + escapeHtml(config.brandSubtitle) + "</p>",
       "      </div>",
       "    </div>",
+      '    <div class="hero-banner">',
+      '      <p class="hero-banner__eyebrow">' + escapeHtml(config.machineLabel) + "</p>",
+      '      <h2 class="hero-banner__title">' + escapeHtml(config.heroHeadline) + "</h2>",
+      '      <p class="hero-banner__copy">' + escapeHtml(config.heroCopy) + "</p>",
+      "    </div>",
       '    <div class="machine__slot" aria-hidden="true"></div>',
       "  </section>",
       '  <section class="machine__panel">',
-      '    <div class="display" id="displayBox">',
+      '    <div class="status-bar">',
       '      <div class="status" id="statusBox">',
       '        <span class="status__light" aria-hidden="true"></span>',
       '        <span id="statusText">WAITING</span>',
       "      </div>",
-      '      <p class="timer" id="timerText">00:00:00</p>',
-      '      <div class="message" id="messageText">Tap Insert Coin to add time</div>',
+      '      <div class="status-hint" id="statusHint">Ready for access</div>',
       "    </div>",
-      '    <div class="controls">',
-      '      <button class="button button--primary" id="coinButton" type="button">' + escapeHtml(config.insertLabel) + "</button>",
-      '      <div class="button-trio">',
-      '        <button class="button button--secondary" id="ratesButton" type="button">' + escapeHtml(config.ratesLabel) + "</button>",
-      '        <button class="button button--secondary" id="voucherButton" type="button">' + escapeHtml(config.voucherLabel) + "</button>",
-      '        <button class="button button--danger" id="disconnectButton" type="button">' + escapeHtml(config.disconnectLabel) + "</button>",
+      '    <div class="identity-rack">',
+      '      <div class="identity-card">',
+      '        <span>MAC</span>',
+      '        <strong id="macText">00:00:00:00:00:00</strong>',
+      "      </div>",
+      '      <div class="identity-card">',
+      '        <span>IP</span>',
+      '        <strong id="ipText">10.0.0.1</strong>',
       "      </div>",
       "    </div>",
-      '    <div class="info-box" id="infoText">WiFi Rates: &#8369;5 = 1h, &#8369;10 = 2h, &#8369;25 = 5h, &#8369;50 = 10h, &#8369;120 = 24h, &#8369;840 = 168h</div>',
+      '    <div class="session-layout">',
+      '      <div class="session-display">',
+      '        <div class="display" id="displayBox">',
+      '          <p class="display__eyebrow" id="displayEyebrow">Ready to Connect</p>',
+      '          <p class="timer" id="timerText">00:00:00</p>',
+      '          <div class="time-breakdown">',
+      '            <div class="time-breakdown__item">',
+      '              <strong id="daysText">00</strong>',
+      "              <span>Days</span>",
+      "            </div>",
+      '            <div class="time-breakdown__item">',
+      '              <strong id="hoursText">00</strong>',
+      "              <span>Hours</span>",
+      "            </div>",
+      '            <div class="time-breakdown__item">',
+      '              <strong id="minutesText">00</strong>',
+      "              <span>Minutes</span>",
+      "            </div>",
+      '            <div class="time-breakdown__item">',
+      '              <strong id="secondsText">00</strong>',
+      "              <span>Seconds</span>",
+      "            </div>",
+      "          </div>",
+      '          <p class="message" id="messageText">Insert coin or redeem a code to connect.</p>',
+      "        </div>",
+      '        <div class="metric-grid">',
+      '          <div class="metric-card">',
+      '            <span>Current Credit</span>',
+      '            <strong id="creditText">&#8369;0.00</strong>',
+      "          </div>",
+      '          <div class="metric-card">',
+      '            <span>Total Points</span>',
+      '            <strong id="pointsText">0.00</strong>',
+      "          </div>",
+      '          <div class="metric-card">',
+      '            <span>Bandwidth</span>',
+      '            <strong id="bandwidthText">10 MB down / 10 MB up</strong>',
+      "          </div>",
+      '          <div class="metric-card">',
+      '            <span>Uptime</span>',
+      '            <strong id="uptimeText">0h 0m 0s</strong>',
+      "          </div>",
+      "        </div>",
+      "      </div>",
+      '      <div class="action-rail">',
+      '        <button class="button button--primary button--coin" id="coinButton" type="button">' + escapeHtml(config.insertLabel) + "</button>",
+      '        <button class="button button--secondary button--rail" id="disconnectButton" type="button">' + escapeHtml(config.disconnectLabel) + "</button>",
+      '        <button class="button button--secondary button--rail" id="voucherButton" type="button">' + escapeHtml(config.voucherLabel) + "</button>",
+      '        <button class="button button--danger button--rail" id="ratesButton" type="button">' + escapeHtml(config.ratesLabel) + "</button>",
+      "      </div>",
+      "    </div>",
+      '    <div class="voucher-strip">',
+      '      <label class="voucher-strip__label" for="voucherInlineInput">' + escapeHtml(config.voucherFieldLabel) + "</label>",
+      '      <div class="voucher-strip__field">',
+      '        <input class="voucher-strip__input" id="voucherInlineInput" type="text" inputmode="text" autocomplete="off" placeholder="' + escapeHtml(config.voucherPlaceholder) + '">',
+      '        <button class="button button--primary voucher-strip__button" id="voucherInlineButton" type="button">Submit</button>',
+      "      </div>",
+      '      <div class="voucher-strip__error" id="voucherError"></div>',
+      "    </div>",
+      '    <div class="info-box" id="infoText">WiFi Rates: &#8369;5.00 = 1h, &#8369;10.00 = 2h, &#8369;25.00 = 5h, &#8369;50.00 = 10h, &#8369;120.00 = 24h, &#8369;840.00 = 168h</div>',
       '    <div class="footer">',
       '      <div class="footer__item">',
-      '        <span class="footer__label">MAC Address</span>',
-      '        <span class="footer__value" id="macText">00:00:00:00:00:00</span>',
+      '        <span class="footer__label">Portal</span>',
+      '        <span class="footer__value">' + escapeHtml(config.brandTitle) + "</span>",
       "      </div>",
       '      <div class="footer__item">',
-      '        <span class="footer__label">IP Address</span>',
-      '        <span class="footer__value" id="ipText">10.0.0.1</span>',
+      '        <span class="footer__label">Theme</span>',
+      '        <span class="footer__value">' + escapeHtml(config.brandSubtitle) + "</span>",
       "      </div>",
       '      <div class="footer__item">',
-      '        <span class="footer__label">Bandwidth</span>',
-      '        <span class="footer__value" id="bandwidthText">10 MB &darr; / 10 MB &uarr;</span>',
+      '        <span class="footer__label">Rates Panel</span>',
+      '        <span class="footer__value">' + escapeHtml(config.ratesTitle) + "</span>",
       "      </div>",
       '      <div class="footer__item">',
-      '        <span class="footer__label">Uptime</span>',
-      '        <span class="footer__value" id="uptimeText">0h 0m 0s</span>',
+      '        <span class="footer__label">Voucher Mode</span>',
+      '        <span class="footer__value">' + escapeHtml(config.voucherTitle) + "</span>",
       "      </div>",
       "    </div>",
-      '    <div class="machine__copyright">2026 &copy; UniFi</div>',
+      '    <div class="machine__copyright">2026 Hotspot Console</div>',
       "  </section>",
       "</main>",
+      "</div>",
+      '<div class="modal modal--coin" id="coinModal" aria-hidden="true">',
+      '  <div class="modal__card modal__card--coin" role="dialog" aria-modal="true" aria-labelledby="coinTitle">',
+      '    <h2 class="modal__title" id="coinTitle">' + escapeHtml(config.coinTitle) + "</h2>",
+      '    <p class="modal__text" id="modalText">' + escapeHtml(config.coinCopy) + "</p>",
+      '    <div class="modal__coin" id="modalCoinText">Pending credit: &#8369;0.00</div>',
+      '    <div class="modal__count" id="modalCountText">No coin detected yet.</div>',
+      '    <div class="modal__time" id="modalTimeText">Waiting</div>',
+      '    <div class="modal__limit" id="modalLimitText">Insert time left: 00:30</div>',
+      '    <div class="modal__actions">',
+      '      <button class="button button--primary" id="continueButton" type="button">' + escapeHtml(config.continueLabel) + "</button>",
+      '      <button class="button button--secondary" id="closeCoinButton" type="button" data-skip-loader="true">' + escapeHtml(config.backLabel) + "</button>",
+      "    </div>",
+      "  </div>",
       "</div>",
       '<div class="modal modal--rates" id="ratesModal" aria-hidden="true">',
       '  <div class="modal__card modal__card--rates" role="dialog" aria-modal="true" aria-labelledby="ratesTitle">',
@@ -193,30 +281,7 @@ if (!document.getElementById("coinButton")) {
       "      </table>",
       "    </div>",
       '    <div class="modal__actions">',
-      '      <button class="button button--secondary" id="closeRatesButton" type="button">' + escapeHtml(config.backLabel) + "</button>",
-      "    </div>",
-      "  </div>",
-      "</div>",
-      '<div class="modal modal--coin" id="coinModal" aria-hidden="true">',
-      '  <div class="modal__card modal__card--coin" role="dialog" aria-modal="true" aria-labelledby="modalTitle">',
-      '    <h2 class="modal__title" id="modalTitle">' + escapeHtml(config.coinTitle) + "</h2>",
-      '    <p class="modal__text" id="modalText">' + escapeHtml(config.coinCopy) + "</p>",
-      '    <div class="modal__limit" id="modalLimitText">Insert time left: 00:30</div>',
-      '    <div class="modal__actions">',
-      '      <button class="button button--secondary" id="continueButton" type="button">' + escapeHtml(config.continueLabel) + "</button>",
-      "    </div>",
-      "  </div>",
-      "</div>",
-      '<div class="modal modal--voucher" id="voucherModal" aria-hidden="true">',
-      '  <div class="modal__card modal__card--voucher" role="dialog" aria-modal="true" aria-labelledby="voucherTitle">',
-      '    <h2 class="modal__title" id="voucherTitle">' + escapeHtml(config.voucherTitle) + "</h2>",
-      '    <p class="modal__text">' + escapeHtml(config.voucherCopy) + "</p>",
-      '    <label class="voucher-label" for="voucherInput">' + escapeHtml(config.voucherFieldLabel) + "</label>",
-      '    <input class="voucher-input" id="voucherInput" type="text" inputmode="text" autocomplete="off" placeholder="' + escapeHtml(config.voucherPlaceholder) + '">',
-      '    <div class="modal__error" id="voucherError"></div>',
-      '    <div class="modal__actions">',
-      '      <button class="button button--primary" id="useVoucherButton" type="button">' + escapeHtml(config.useVoucherLabel) + "</button>",
-      '      <button class="button button--secondary" id="closeVoucherButton" type="button">' + escapeHtml(config.backLabel) + "</button>",
+      '      <button class="button button--secondary" id="closeRatesButton" type="button" data-skip-loader="true">' + escapeHtml(config.backLabel) + "</button>",
       "    </div>",
       "  </div>",
       "</div>"
@@ -230,55 +295,27 @@ if (!document.getElementById("coinButton")) {
 function initializePortalViewportFit() {
   var stage = document.getElementById("portalStage");
   var machine = stage && stage.querySelector(".machine");
-  var resizeToken = null;
 
   if (!stage || !machine) {
     return;
   }
 
-  function fitPortalStage() {
+  function resetPortalStageLayout() {
     machine.style.transform = "";
-    stage.style.width = "";
+    stage.style.width = "100%";
     stage.style.height = "";
     document.body.classList.remove("portal-page--fixed");
-
-    if (window.innerWidth < 900) {
-      return;
-    }
-
-    var viewportPadding = 24;
-    var availableWidth = window.innerWidth - viewportPadding * 2;
-    var availableHeight = window.innerHeight - viewportPadding * 2;
-    var naturalWidth = machine.offsetWidth;
-    var naturalHeight = machine.offsetHeight;
-    var scale = Math.min(1, availableWidth / naturalWidth, availableHeight / naturalHeight);
-
-    stage.style.width = Math.round(naturalWidth * scale) + "px";
-    stage.style.height = Math.round(naturalHeight * scale) + "px";
-    machine.style.transform = "scale(" + scale + ")";
-    document.body.classList.add("portal-page--fixed");
   }
 
-  function queueFitPortalStage() {
-    if (resizeToken !== null) {
-      window.cancelAnimationFrame(resizeToken);
-    }
-
-    resizeToken = window.requestAnimationFrame(function () {
-      resizeToken = null;
-      fitPortalStage();
-    });
-  }
-
-  window.addEventListener("resize", queueFitPortalStage);
-  window.addEventListener("orientationchange", queueFitPortalStage);
-  window.addEventListener("load", queueFitPortalStage);
+  window.addEventListener("resize", resetPortalStageLayout);
+  window.addEventListener("orientationchange", resetPortalStageLayout);
+  window.addEventListener("load", resetPortalStageLayout);
 
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(queueFitPortalStage);
+    document.fonts.ready.then(resetPortalStageLayout);
   }
 
-  queueFitPortalStage();
+  resetPortalStageLayout();
 }
 
 function registerPortalActionLoading() {
@@ -291,11 +328,10 @@ function registerPortalActionLoading() {
   document.addEventListener("click", function (event) {
     var trigger = event.target.closest(".button");
 
-    if (!trigger || trigger.disabled) {
+    if (!trigger || trigger.disabled || trigger.dataset.skipLoader === "true") {
       return;
     }
 
-    showPortalLoader(420);
+    showPortalLoader(PORTAL_LOADER_DURATION_MS);
   });
 }
-

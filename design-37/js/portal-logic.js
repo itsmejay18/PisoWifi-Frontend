@@ -7,43 +7,49 @@
     { credit: 120, seconds: 86400, download: "10 MB", upload: "10 MB", voucher: "UNIFI120" },
     { credit: 840, seconds: 604800, download: "10 MB", upload: "10 MB", voucher: "UNIFI840" }
   ];
-  var RATES = {};
   var VOUCHERS = {};
-  var COINS = [];
 
   RATE_PLANS.forEach(function (plan) {
-    RATES[plan.credit] = plan.seconds;
-    VOUCHERS[plan.voucher] = plan.seconds;
-    COINS.push(plan.credit);
+    VOUCHERS[plan.voucher] = plan;
   });
 
   var elements = {
     displayBox: document.getElementById("displayBox"),
+    displayEyebrow: document.getElementById("displayEyebrow"),
     statusBox: document.getElementById("statusBox"),
     statusText: document.getElementById("statusText"),
+    statusHint: document.getElementById("statusHint"),
     timerText: document.getElementById("timerText"),
+    daysText: document.getElementById("daysText"),
+    hoursText: document.getElementById("hoursText"),
+    minutesText: document.getElementById("minutesText"),
+    secondsText: document.getElementById("secondsText"),
     messageText: document.getElementById("messageText"),
     infoText: document.getElementById("infoText"),
+    pointsText: document.getElementById("pointsText"),
+    creditText: document.getElementById("creditText"),
     coinButton: document.getElementById("coinButton"),
     ratesButton: document.getElementById("ratesButton"),
     voucherButton: document.getElementById("voucherButton"),
     disconnectButton: document.getElementById("disconnectButton"),
+    voucherInlineInput: document.getElementById("voucherInlineInput"),
+    voucherInlineButton: document.getElementById("voucherInlineButton"),
+    voucherError: document.getElementById("voucherError"),
     macText: document.getElementById("macText"),
     ipText: document.getElementById("ipText"),
     bandwidthText: document.getElementById("bandwidthText"),
     uptimeText: document.getElementById("uptimeText"),
-    ratesModal: document.getElementById("ratesModal"),
-    closeRatesButton: document.getElementById("closeRatesButton"),
-    ratesTableBody: document.getElementById("ratesTableBody"),
     coinModal: document.getElementById("coinModal"),
+    closeCoinButton: document.getElementById("closeCoinButton"),
     continueButton: document.getElementById("continueButton"),
     modalLimitText: document.getElementById("modalLimitText"),
     modalText: document.getElementById("modalText"),
-    voucherModal: document.getElementById("voucherModal"),
-    voucherInput: document.getElementById("voucherInput"),
-    voucherError: document.getElementById("voucherError"),
-    useVoucherButton: document.getElementById("useVoucherButton"),
-    closeVoucherButton: document.getElementById("closeVoucherButton")
+    modalCoinText: document.getElementById("modalCoinText"),
+    modalCountText: document.getElementById("modalCountText"),
+    modalTimeText: document.getElementById("modalTimeText"),
+    ratesModal: document.getElementById("ratesModal"),
+    closeRatesButton: document.getElementById("closeRatesButton"),
+    ratesTableBody: document.getElementById("ratesTableBody")
   };
 
   if (!elements.coinButton) {
@@ -52,42 +58,43 @@
 
   var state = {
     seconds: 0,
+    paused: false,
     timerId: null,
     macAddress: createMacAddress(),
     clientIp: createClientIp(),
     bandwidthDown: "10 MB",
     bandwidthUp: "10 MB",
     uptimeSeconds: 0,
+    totalCreditLoaded: 0,
     flashText: "",
     flashTimer: null,
     ratesModalOpen: false,
     coinModalOpen: false,
-    voucherModalOpen: false,
-    pendingSeconds: 0,
-    pendingPeso: 0,
-    lastCoin: 0,
-    pendingCoinCount: 0,
     voucherError: "",
+    pendingSeconds: 0,
+    pendingCredit: 0,
+    pendingCoinCount: 0,
+    lastCoin: 0,
     coinWindowSeconds: 30,
-    coinWindowId: null,
-    audioContext: null
+    coinWindowId: null
   };
 
+  elements.infoText.textContent = defaultRatesText();
+  elements.bandwidthText.textContent = state.bandwidthDown + " down / " + state.bandwidthUp + " up";
   elements.macText.textContent = state.macAddress;
   elements.ipText.textContent = state.clientIp;
-  elements.bandwidthText.textContent = state.bandwidthDown + " \u2193 / " + state.bandwidthUp + " \u2191";
   elements.uptimeText.textContent = formatHumanDuration(state.uptimeSeconds);
   renderRatesTable();
 
   elements.coinButton.addEventListener("click", openCoinModal);
   elements.ratesButton.addEventListener("click", openRatesModal);
-  elements.voucherButton.addEventListener("click", openVoucherModal);
-  elements.disconnectButton.addEventListener("click", disconnectSession);
-  elements.closeRatesButton.addEventListener("click", closeRatesModal);
+  elements.voucherButton.addEventListener("click", focusVoucherField);
+  elements.disconnectButton.addEventListener("click", togglePauseOrReset);
+  elements.closeCoinButton.addEventListener("click", closeCoinModal);
   elements.continueButton.addEventListener("click", continueWithTime);
-  elements.useVoucherButton.addEventListener("click", applyVoucher);
-  elements.closeVoucherButton.addEventListener("click", closeVoucherModal);
-  elements.voucherInput.addEventListener("keydown", function (event) {
+  elements.closeRatesButton.addEventListener("click", closeRatesModal);
+  elements.voucherInlineButton.addEventListener("click", applyVoucher);
+  elements.voucherInlineInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
       if (typeof window.triggerPortalActionLoading === "function") {
         window.triggerPortalActionLoading(420);
@@ -97,6 +104,34 @@
     }
   });
 
+  elements.ratesModal.addEventListener("click", function (event) {
+    if (event.target === elements.ratesModal) {
+      closeRatesModal();
+    }
+  });
+
+  elements.coinModal.addEventListener("click", function (event) {
+    if (event.target === elements.coinModal) {
+      closeCoinModal();
+    }
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key !== "Escape") {
+      return;
+    }
+
+    if (state.coinModalOpen) {
+      closeCoinModal();
+      return;
+    }
+
+    if (state.ratesModalOpen) {
+      closeRatesModal();
+    }
+  });
+
+  bindExternalCoinHooks();
   render();
 
   function renderRatesTable() {
@@ -112,85 +147,61 @@
     }).join("");
   }
 
-  function openRatesModal() {
-    state.ratesModalOpen = true;
-    state.coinModalOpen = false;
-    state.voucherModalOpen = false;
-    stopCoinWindow();
-    render();
-  }
-
-  function closeRatesModal() {
-    state.ratesModalOpen = false;
-    render();
-  }
-
   function openCoinModal() {
     state.coinModalOpen = true;
     state.ratesModalOpen = false;
-    state.voucherModalOpen = false;
     resetPendingCoinState();
-    prepareAudio();
     startCoinWindow();
     render();
   }
 
   function closeCoinModal() {
-    state.coinModalOpen = false;
-    stopCoinWindow();
-    render();
-  }
-
-  function openVoucherModal() {
-    state.voucherModalOpen = true;
-    state.coinModalOpen = false;
-    state.ratesModalOpen = false;
-    stopCoinWindow();
-    state.voucherError = "";
-    elements.voucherInput.value = "";
-    render();
-    elements.voucherInput.focus();
-  }
-
-  function closeVoucherModal() {
-    state.voucherModalOpen = false;
-    state.voucherError = "";
-    elements.voucherInput.value = "";
-    render();
-  }
-
-  function simulateCoinInsert() {
-    if (state.coinWindowSeconds <= 0) {
+    if (state.pendingSeconds > 0) {
+      continueWithTime();
       return;
     }
 
-    var coin = COINS[Math.floor(Math.random() * COINS.length)];
-    var addedSeconds = RATES[coin];
-    state.pendingSeconds += addedSeconds;
-    state.pendingPeso += coin;
-    state.lastCoin = coin;
-    state.pendingCoinCount += 1;
+    state.coinModalOpen = false;
+    stopCoinWindow();
+    resetPendingCoinState();
     render();
   }
 
   function continueWithTime() {
-    if (state.pendingSeconds > 0) {
-      state.seconds += state.pendingSeconds;
-      showFlashMessage("Credit loaded: " + formatPeso(state.pendingPeso));
-      elements.infoText.textContent = "Credit loaded: " + formatPeso(state.pendingPeso) + " - " + formatHumanDuration(state.pendingSeconds);
-      pulseDisplay();
-      startTimer();
+    var addedSeconds = state.pendingSeconds;
+    var addedCredit = state.pendingCredit;
+    var hadSession = state.seconds > 0;
+
+    if (addedSeconds <= 0) {
+      closeCoinModal();
+      return;
     }
 
-    resetPendingCoinState();
-    closeCoinModal();
-  }
+    state.seconds += addedSeconds;
+    state.totalCreditLoaded += addedCredit;
+    state.paused = false;
+    state.voucherError = "";
+    elements.voucherInlineInput.value = "";
+    elements.infoText.textContent =
+      (hadSession ? "Session extended: " : "Credit loaded: ") +
+      formatPeso(addedCredit) +
+      " for " +
+      formatHumanDuration(addedSeconds) +
+      ".";
 
-  function resetPendingCoinState() {
-    state.pendingSeconds = 0;
-    state.pendingPeso = 0;
-    state.lastCoin = 0;
-    state.pendingCoinCount = 0;
+    showFlashMessage(
+      (hadSession ? "Session extended: " : "Credit loaded: ") +
+        formatPeso(addedCredit) +
+        " | " +
+        formatHumanDuration(addedSeconds)
+    );
+    pulseDisplay();
+    startTimer();
+
+    state.coinModalOpen = false;
+    stopCoinWindow();
+    resetPendingCoinState();
+    render();
   }
 
   function startCoinWindow() {
@@ -204,12 +215,10 @@
 
       if (state.coinWindowSeconds > 0) {
         state.coinWindowSeconds -= 1;
-        playCountdownTick(state.coinWindowSeconds);
       }
 
       if (state.coinWindowSeconds <= 0) {
         state.coinWindowSeconds = 0;
-        stopCoinWindow();
 
         if (state.pendingSeconds > 0) {
           continueWithTime();
@@ -217,7 +226,6 @@
         }
 
         closeCoinModal();
-        render();
         return;
       }
 
@@ -232,68 +240,122 @@
     }
   }
 
-  function applyVoucher() {
-    var code = elements.voucherInput.value.replace(/\s+/g, "").toUpperCase();
-    var voucherSeconds = VOUCHERS[code];
+  function resetPendingCoinState() {
+    state.pendingSeconds = 0;
+    state.pendingCredit = 0;
+    state.pendingCoinCount = 0;
+    state.lastCoin = 0;
+    state.coinWindowSeconds = 30;
+  }
 
-    if (!voucherSeconds) {
+  function openRatesModal() {
+    state.ratesModalOpen = true;
+
+    if (state.coinModalOpen) {
+      state.coinModalOpen = false;
+      stopCoinWindow();
+      resetPendingCoinState();
+    }
+
+    render();
+  }
+
+  function closeRatesModal() {
+    state.ratesModalOpen = false;
+    render();
+  }
+
+  function focusVoucherField() {
+    elements.voucherInlineInput.focus();
+    elements.voucherInlineInput.select();
+
+    if (typeof elements.voucherInlineInput.scrollIntoView === "function") {
+      elements.voucherInlineInput.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+
+  function applyVoucher() {
+    var code = elements.voucherInlineInput.value.replace(/\s+/g, "").toUpperCase();
+    var plan = VOUCHERS[code];
+
+    if (!plan) {
       state.voucherError = "Invalid voucher code.";
       render();
       return;
     }
 
-    state.seconds += voucherSeconds;
+    state.seconds += plan.seconds;
+    state.totalCreditLoaded += plan.credit;
+    state.paused = false;
     state.voucherError = "";
-    elements.infoText.textContent = "Voucher loaded: " + code + " - " + formatHumanDuration(voucherSeconds);
+    elements.voucherInlineInput.value = "";
+    elements.infoText.textContent =
+      "Voucher " + code + " loaded for " + formatHumanDuration(plan.seconds) + ".";
+
     showFlashMessage("Voucher accepted: " + code);
     pulseDisplay();
     startTimer();
-    closeVoucherModal();
+    render();
   }
 
-  function disconnectSession() {
-    state.seconds = 0;
-    state.uptimeSeconds = 0;
-    stopTimer();
-
-    if (state.flashTimer !== null) {
-      window.clearTimeout(state.flashTimer);
+  function togglePauseOrReset() {
+    if (state.seconds <= 0) {
+      resetPortal();
+      return;
     }
 
+    state.paused = !state.paused;
+
+    if (state.paused) {
+      stopTimer();
+      elements.infoText.textContent = "Session paused. Tap Resume to continue.";
+      showFlashMessage("Session paused");
+    } else {
+      startTimer();
+      elements.infoText.textContent =
+        "Session resumed with " + formatHumanDuration(state.seconds) + " remaining.";
+      showFlashMessage("Session resumed");
+    }
+
+    render();
+  }
+
+  function resetPortal() {
+    state.seconds = 0;
+    state.paused = false;
+    state.totalCreditLoaded = 0;
+    state.uptimeSeconds = 0;
+    state.voucherError = "";
+    state.flashText = "";
+    state.ratesModalOpen = false;
+    state.coinModalOpen = false;
     state.macAddress = createMacAddress();
     state.clientIp = createClientIp();
-    elements.macText.textContent = state.macAddress;
-    elements.ipText.textContent = state.clientIp;
+    elements.voucherInlineInput.value = "";
     elements.infoText.textContent = defaultRatesText();
-    state.flashText = "";
-    state.voucherError = "";
-    elements.voucherInput.value = "";
+    stopTimer();
+    stopCoinWindow();
     resetPendingCoinState();
-    closeRatesModal();
-    closeCoinModal();
-    closeVoucherModal();
     render();
   }
 
   function startTimer() {
-    if (state.timerId !== null) {
+    if (state.timerId !== null || state.paused || state.seconds <= 0) {
       return;
     }
 
     state.timerId = window.setInterval(function () {
-      if (state.seconds > 0) {
+      if (state.seconds > 0 && !state.paused) {
         state.seconds -= 1;
         state.uptimeSeconds += 1;
       }
 
       if (state.seconds <= 0) {
         state.seconds = 0;
+        state.paused = false;
         stopTimer();
         elements.infoText.textContent = defaultRatesText();
-        state.flashText = "";
-        closeRatesModal();
-        closeCoinModal();
-        closeVoucherModal();
+        showFlashMessage("Session ended");
       }
 
       render();
@@ -308,29 +370,146 @@
   }
 
   function render() {
-    var connected = state.seconds > 0;
-    var message = state.flashText || (connected ? "Internet access is active" : "Tap Insert Coin or use Voucher");
+    var hasSession = state.seconds > 0;
+    var isActive = hasSession && !state.paused;
+    var parts = splitDuration(state.seconds);
 
-    elements.statusText.textContent = connected ? "CONNECTED" : "WAITING";
-    elements.timerText.textContent = formatTime(state.seconds);
-    elements.messageText.textContent = message;
+    elements.statusText.textContent = hasSession ? (state.paused ? "PAUSED" : "CONNECTED") : "WAITING";
+    elements.statusHint.textContent = hasSession
+      ? state.paused
+        ? "Session on hold"
+        : "Signal locked"
+      : "Ready for access";
+    elements.displayEyebrow.textContent = hasSession
+      ? state.paused
+        ? "Paused Session"
+        : "Current Session"
+      : "Ready to Connect";
+    elements.timerText.textContent = formatClock(state.seconds);
+    elements.daysText.textContent = pad(parts.days);
+    elements.hoursText.textContent = pad(parts.hours);
+    elements.minutesText.textContent = pad(parts.minutes);
+    elements.secondsText.textContent = pad(parts.seconds);
+    elements.messageText.textContent = state.flashText || defaultMessage(hasSession, state.paused);
+    elements.messageText.classList.toggle("is-flash", state.flashText !== "");
     elements.macText.textContent = state.macAddress;
     elements.ipText.textContent = state.clientIp;
-    elements.bandwidthText.textContent = state.bandwidthDown + " \u2193 / " + state.bandwidthUp + " \u2191";
+    elements.bandwidthText.textContent = state.bandwidthDown + " down / " + state.bandwidthUp + " up";
     elements.uptimeText.textContent = formatHumanDuration(state.uptimeSeconds);
-    elements.statusBox.classList.toggle("is-connected", connected);
-    elements.disconnectButton.disabled = !connected;
-    elements.ratesModal.classList.toggle("is-open", state.ratesModalOpen);
-    elements.ratesModal.setAttribute("aria-hidden", state.ratesModalOpen ? "false" : "true");
+    elements.creditText.textContent = formatPeso(state.totalCreditLoaded);
+    elements.pointsText.textContent = formatPoints(calculatePoints());
+    elements.coinButton.textContent = hasSession ? "Extend Time" : "Insert Coin";
+    elements.disconnectButton.textContent = hasSession ? (state.paused ? "Resume" : "Pause") : "Reset Portal";
+    elements.voucherError.textContent = state.voucherError;
+    elements.statusBox.classList.toggle("is-connected", isActive);
+    elements.statusBox.classList.toggle("is-paused", hasSession && state.paused);
     elements.coinModal.classList.toggle("is-open", state.coinModalOpen);
     elements.coinModal.setAttribute("aria-hidden", state.coinModalOpen ? "false" : "true");
-    elements.voucherModal.classList.toggle("is-open", state.voucherModalOpen);
-    elements.voucherModal.setAttribute("aria-hidden", state.voucherModalOpen ? "false" : "true");
-    elements.modalLimitText.textContent = "Insert time left: " + pad(Math.floor(state.coinWindowSeconds / 60)) + ":" + pad(state.coinWindowSeconds % 60);
+    elements.ratesModal.classList.toggle("is-open", state.ratesModalOpen);
+    elements.ratesModal.setAttribute("aria-hidden", state.ratesModalOpen ? "false" : "true");
+    elements.continueButton.disabled = state.pendingSeconds <= 0;
     elements.modalText.textContent = state.pendingSeconds > 0
-      ? "Detected inserted credit. Press Done to continue."
-      : "Waiting for inserted credit...";
-    elements.voucherError.textContent = state.voucherError;
+      ? "Coin detected. Press Continue to load it into the session."
+      : "Waiting for coin input from the vendo...";
+    elements.modalCoinText.textContent = "Pending credit: " + formatPeso(state.pendingCredit);
+    elements.modalCountText.textContent = state.pendingSeconds > 0
+      ? "Detected " +
+        state.pendingCoinCount +
+        " coin" +
+        (state.pendingCoinCount === 1 ? "" : "s") +
+        " | Latest " +
+        formatPeso(state.lastCoin)
+      : "No coin detected yet.";
+    elements.modalTimeText.textContent = state.pendingSeconds > 0 ? formatHumanDuration(state.pendingSeconds) : "Waiting";
+    elements.modalLimitText.textContent =
+      "Insert time left: " + pad(Math.floor(state.coinWindowSeconds / 60)) + ":" + pad(state.coinWindowSeconds % 60);
+  }
+
+  function bindExternalCoinHooks() {
+    window.portalOpenCoinModal = openCoinModal;
+    window.portalCloseCoinModal = closeCoinModal;
+    window.portalInsertCoin = handleExternalCoinInsert;
+
+    window.addEventListener("portal-coin-inserted", function (event) {
+      handleExternalCoinInsert(event.detail);
+    });
+  }
+
+  function handleExternalCoinInsert(detail) {
+    var plan = resolveCoinPlan(detail);
+
+    if (!plan) {
+      return false;
+    }
+
+    if (!state.coinModalOpen) {
+      state.coinModalOpen = true;
+      state.ratesModalOpen = false;
+      resetPendingCoinState();
+      startCoinWindow();
+    }
+
+    state.pendingSeconds += plan.seconds;
+    state.pendingCredit += plan.credit;
+    state.pendingCoinCount += 1;
+    state.lastCoin = plan.credit;
+    render();
+    return true;
+  }
+
+  function resolveCoinPlan(detail) {
+    var creditValue = 0;
+    var secondsValue = 0;
+    var matchedPlan = null;
+
+    if (typeof detail === "number") {
+      creditValue = detail;
+    } else if (typeof detail === "string") {
+      creditValue = Number(detail);
+    } else if (detail && typeof detail === "object") {
+      if (detail.credit !== undefined) {
+        creditValue = Number(detail.credit);
+      } else if (detail.amount !== undefined) {
+        creditValue = Number(detail.amount);
+      } else if (detail.value !== undefined) {
+        creditValue = Number(detail.value);
+      }
+
+      if (detail.seconds !== undefined) {
+        secondsValue = Number(detail.seconds);
+      }
+    }
+
+    matchedPlan = findRatePlanByCredit(creditValue);
+
+    if (!secondsValue && matchedPlan) {
+      secondsValue = matchedPlan.seconds;
+    }
+
+    if ((!creditValue || creditValue <= 0) && matchedPlan) {
+      creditValue = matchedPlan.credit;
+    }
+
+    if (creditValue > 0 && secondsValue > 0) {
+      return {
+        credit: creditValue,
+        seconds: secondsValue
+      };
+    }
+
+    return null;
+  }
+
+  function findRatePlanByCredit(creditValue) {
+    var index;
+
+    for (index = 0; index < RATE_PLANS.length; index += 1) {
+      if (Number(RATE_PLANS[index].credit) === Number(creditValue)) {
+        return RATE_PLANS[index];
+      }
+    }
+
+    return null;
   }
 
   function showFlashMessage(text) {
@@ -340,14 +519,10 @@
       window.clearTimeout(state.flashTimer);
     }
 
-    elements.messageText.classList.remove("is-flash");
-    void elements.messageText.offsetWidth;
-    elements.messageText.classList.add("is-flash");
-
     state.flashTimer = window.setTimeout(function () {
       state.flashText = "";
       render();
-    }, 900);
+    }, 1400);
   }
 
   function pulseDisplay() {
@@ -356,49 +531,16 @@
     elements.displayBox.classList.add("coin-pop");
   }
 
-  function prepareAudio() {
-    var AudioContextRef = window.AudioContext || window.webkitAudioContext;
-
-    if (!AudioContextRef) {
-      return;
+  function defaultMessage(hasSession, isPaused) {
+    if (!hasSession) {
+      return "Insert coin or redeem a code to connect.";
     }
 
-    if (!state.audioContext) {
-      state.audioContext = new AudioContextRef();
+    if (isPaused) {
+      return "Session paused. Tap Resume when you are ready.";
     }
 
-    if (state.audioContext.state === "suspended") {
-      state.audioContext.resume();
-    }
-  }
-
-  function playCountdownTick(remainingSeconds) {
-    if (remainingSeconds < 0) {
-      return;
-    }
-
-    prepareAudio();
-
-    if (!state.audioContext) {
-      return;
-    }
-
-    var ctx = state.audioContext;
-    var now = ctx.currentTime;
-    var urgent = remainingSeconds <= 5;
-    var gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(urgent ? 0.22 : 0.11, now + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + (urgent ? 0.22 : 0.14));
-    gain.connect(ctx.destination);
-
-    var tone = ctx.createOscillator();
-    tone.type = urgent ? "square" : "sine";
-    tone.frequency.setValueAtTime(urgent ? 1320 : 920, now);
-    tone.frequency.exponentialRampToValueAtTime(urgent ? 1080 : 760, now + (urgent ? 0.12 : 0.08));
-    tone.connect(gain);
-    tone.start(now);
-    tone.stop(now + (urgent ? 0.14 : 0.1));
+    return "Session active. Extend time or redeem another code.";
   }
 
   function defaultRatesText() {
@@ -407,27 +549,69 @@
     }).join(", ");
   }
 
-  function formatTime(totalSeconds) {
-    var hours = Math.floor(totalSeconds / 3600);
+  function calculatePoints() {
+    return state.totalCreditLoaded * 0.12 + state.uptimeSeconds / 3600 * 0.2;
+  }
+
+  function splitDuration(totalSeconds) {
+    var days = Math.floor(totalSeconds / 86400);
+    var hours = Math.floor((totalSeconds % 86400) / 3600);
     var minutes = Math.floor((totalSeconds % 3600) / 60);
     var seconds = totalSeconds % 60;
-    return pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
+
+    return {
+      days: days,
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds
+    };
+  }
+
+  function formatClock(totalSeconds) {
+    var parts = splitDuration(totalSeconds);
+    return pad(parts.hours) + ":" + pad(parts.minutes) + ":" + pad(parts.seconds);
   }
 
   function formatHumanDuration(totalSeconds) {
-    var hours = Math.floor(totalSeconds / 3600);
-    var minutes = Math.floor((totalSeconds % 3600) / 60);
-    var seconds = totalSeconds % 60;
-    return hours + "h " + minutes + "m " + seconds + "s";
+    var parts = splitDuration(totalSeconds);
+    var output = [];
+
+    if (parts.days > 0) {
+      output.push(parts.days + "d");
+    }
+
+    output.push(parts.hours + "h");
+    output.push(parts.minutes + "m");
+    output.push(parts.seconds + "s");
+
+    return output.join(" ");
   }
 
   function formatShortDuration(totalSeconds) {
-    var hours = Math.floor(totalSeconds / 3600);
-    return hours + "h";
+    var parts = splitDuration(totalSeconds);
+    var output = [];
+
+    if (parts.days > 0) {
+      output.push(parts.days + "d");
+    }
+
+    if (parts.hours > 0) {
+      output.push(parts.hours + "h");
+    }
+
+    if (parts.minutes > 0 && parts.days === 0) {
+      output.push(parts.minutes + "m");
+    }
+
+    return output.join(" ");
   }
 
   function formatPeso(value) {
-    return "\u20B1" + value;
+    return "\u20B1" + Number(value).toFixed(2);
+  }
+
+  function formatPoints(value) {
+    return Number(value).toFixed(2);
   }
 
   function pad(value) {
